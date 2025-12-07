@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import "./loader.css";
 import { Honk, Orbitron } from "next/font/google";
@@ -40,21 +40,33 @@ export default function LoaderPage() {
   const neuronCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const ballsCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const animationFrameRef = useRef<number>(0);
+  const loaderIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- TYPEWRITER LOGIC ---
   const fullName = "KRITIKA RUHELA";
   const typedText = useTypewriter(screen === "typing" ? fullName : "");
 
+  // Cleanup function for all animations and intervals
+  const cleanupAnimations = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = 0;
+    }
+    if (loaderIntervalRef.current) {
+      clearInterval(loaderIntervalRef.current);
+      loaderIntervalRef.current = null;
+    }
+  }, []);
+
   // Play/pause loader audio based on loader visibility
   useEffect(() => {
-    // Play audio if on loader, kr, or typing screens (not start or after navigation)
     if (["loader", "kr", "typing"].includes(screen)) {
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
         audioRef.current.play().catch(() => {});
       }
     }
-    // Pause audio if leaving loader screens
     return () => {
       if (!["loader", "kr", "typing"].includes(screen) && audioRef.current) {
         audioRef.current.pause();
@@ -71,11 +83,14 @@ export default function LoaderPage() {
         audioRef.current.currentTime = 0;
       }
     };
-    router.prefetch && router.prefetch("/home"); // ensure page is ready
-    return stopAudio;
-  }, [router]);
+    router.prefetch?.("/home"); // Safe prefetch check
+    return () => {
+      stopAudio();
+      cleanupAnimations();
+    };
+  }, [router, cleanupAnimations]);
 
-  // Route to /home after typing is finished and after 1 second pause
+  // Route to /home after typing is finished
   useEffect(() => {
     if (screen === "typing" && typedText === fullName) {
       const timeout = setTimeout(() => {
@@ -83,20 +98,21 @@ export default function LoaderPage() {
           audioRef.current.pause();
           audioRef.current.currentTime = 0;
         }
+        cleanupAnimations();
         router.push("/home");
-      }, 1000); // 1 second
+      }, 1000);
       return () => clearTimeout(timeout);
     }
-  }, [screen, typedText, router]);
+  }, [screen, typedText, router, fullName, cleanupAnimations]);
 
   // Loader progress logic
   useEffect(() => {
-    let interval: NodeJS.Timeout;
     if (screen === "loader") {
-      interval = setInterval(() => {
+      const interval = setInterval(() => {
         setCount((prev) => {
           if (prev >= 100) {
             clearInterval(interval);
+            loaderIntervalRef.current = null;
             setTimeout(() => {
               setIsWhiteMode(true);
               setScreen("kr");
@@ -109,28 +125,39 @@ export default function LoaderPage() {
           return prev + 1;
         });
       }, 20);
+      loaderIntervalRef.current = interval;
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (loaderIntervalRef.current) {
+        clearInterval(loaderIntervalRef.current);
+        loaderIntervalRef.current = null;
+      }
+    };
   }, [screen]);
 
   // Neuron BG animation
   useEffect(() => {
     const canvas = neuronCanvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
     const dpr = window.devicePixelRatio || 1;
     let width = window.innerWidth * dpr;
     let height = window.innerHeight * dpr;
-    canvas.width = width;
-    canvas.height = height;
+    
     const resize = () => {
       width = window.innerWidth * dpr;
       height = window.innerHeight * dpr;
       canvas.width = width;
       canvas.height = height;
     };
+
+    canvas.width = width;
+    canvas.height = height;
     window.addEventListener("resize", resize);
+
     const randomDir = () => Math.random() * 1.2 - 0.6;
     const createNeuron = () => ({
       x: Math.random() * width,
@@ -139,10 +166,14 @@ export default function LoaderPage() {
       vy: randomDir(),
       radius: Math.random() * 2 + 1.3,
     });
+
     const neurons = Array.from({ length: 60 }, createNeuron);
-    function animate() {
+
+    const animate = () => {
       ctx.clearRect(0, 0, width, height);
       const color = isWhiteMode ? "black" : "white";
+
+      // Draw connections
       for (let i = 0; i < neurons.length; i++) {
         for (let j = i + 1; j < neurons.length; j++) {
           const dx = neurons[i].x - neurons[j].x;
@@ -161,6 +192,8 @@ export default function LoaderPage() {
           }
         }
       }
+
+      // Draw neurons and update positions
       for (const n of neurons) {
         ctx.save();
         ctx.beginPath();
@@ -170,40 +203,54 @@ export default function LoaderPage() {
         ctx.shadowBlur = 15;
         ctx.fill();
         ctx.restore();
+
         n.x += n.vx;
         n.y += n.vy;
         if (n.x <= 0 || n.x >= width) n.vx *= -1;
         if (n.y <= 0 || n.y >= height) n.vy *= -1;
       }
-      requestAnimationFrame(animate);
-    }
-    animate();
-    return () => window.removeEventListener("resize", resize);
-  }, [isWhiteMode]);
 
-  // Ball animation, removal, moving apart, typing screen trigger
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cleanupAnimations();
+    };
+  }, [isWhiteMode, cleanupAnimations]);
+
+  // Ball animation
   useEffect(() => {
     if ((screen !== "kr" && screen !== "typing") || !ballsVisible) return;
+
     const canvas = ballsCanvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
     const dpr = window.devicePixelRatio || 1;
     let width = window.innerWidth * dpr;
     let height = window.innerHeight * dpr;
-    canvas.width = width;
-    canvas.height = height;
+    
     const resize = () => {
       width = window.innerWidth * dpr;
       height = window.innerHeight * dpr;
       canvas.width = width;
       canvas.height = height;
     };
+
+    canvas.width = width;
+    canvas.height = height;
     window.addEventListener("resize", resize);
+
     const ballRadius = 46 * dpr;
     const KRcenterX = width / 2;
     const KRcenterY = height / 2;
     const KRWidth = 190 * dpr;
+
     let leftBall = { x: -ballRadius, y: KRcenterY, vx: 3.0 * dpr, vy: 0 };
     let rightBall = { x: width + ballRadius, y: KRcenterY, vx: -3.0 * dpr, vy: 0 };
     let leftBouncing = false;
@@ -212,9 +259,12 @@ export default function LoaderPage() {
     let collisionPhase = false;
     let removingPhase = false;
     let movingApartFrame = 0;
-    function animateBalls() {
+
+    const animateBalls = () => {
       ctx.clearRect(0, 0, width, height);
+
       if (!ballsMovingApartRef.current) {
+        // Move balls toward center
         if (!leftBouncing) {
           if (leftBall.x + ballRadius < KRcenterX - KRWidth / 2) {
             leftBall.x += leftBall.vx;
@@ -226,6 +276,7 @@ export default function LoaderPage() {
           leftBall.x -= leftBall.vx * Math.exp(-bounceFrame / 18);
           leftBall.y += Math.sin(bounceFrame / 11) * 2 * dpr;
         }
+
         if (!rightBouncing) {
           if (rightBall.x - ballRadius > KRcenterX + KRWidth / 2) {
             rightBall.x += rightBall.vx;
@@ -237,9 +288,13 @@ export default function LoaderPage() {
           rightBall.x -= rightBall.vx * Math.exp(-bounceFrame / 18);
           rightBall.y -= Math.sin(bounceFrame / 11) * 2 * dpr;
         }
+
+        // Check for collision phase
         if (leftBouncing && rightBouncing && !collisionPhase) {
           if (bounceFrame > 52) collisionPhase = true;
         }
+
+        // Collision and removal phase
         if (collisionPhase && !removingPhase) {
           leftBall.x += 4.2 * dpr;
           rightBall.x -= 4.2 * dpr;
@@ -254,6 +309,7 @@ export default function LoaderPage() {
           }
         }
       } else {
+        // Balls moving apart
         movingApartFrame++;
         leftBall.x -= 5.0 * dpr;
         rightBall.x += 5.0 * dpr;
@@ -261,7 +317,10 @@ export default function LoaderPage() {
           setBallsVisible(false);
         }
       }
+
+      // Draw balls if visible
       if (ballsVisible) {
+        // Left ball
         ctx.save();
         ctx.beginPath();
         ctx.arc(leftBall.x, leftBall.y, ballRadius, 0, 2 * Math.PI);
@@ -271,6 +330,8 @@ export default function LoaderPage() {
         ctx.globalAlpha = 0.92;
         ctx.fill();
         ctx.restore();
+
+        // Right ball
         ctx.save();
         ctx.beginPath();
         ctx.arc(rightBall.x, rightBall.y, ballRadius, 0, 2 * Math.PI);
@@ -281,11 +342,28 @@ export default function LoaderPage() {
         ctx.fill();
         ctx.restore();
       }
-      requestAnimationFrame(animateBalls);
-    }
+
+      animationFrameRef.current = requestAnimationFrame(animateBalls);
+    };
+
     animateBalls();
-    return () => window.removeEventListener("resize", resize);
-  }, [screen, ballsVisible]);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cleanupAnimations();
+    };
+  }, [screen, ballsVisible, cleanupAnimations]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupAnimations();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, [cleanupAnimations]);
 
   return (
     <div
@@ -300,35 +378,38 @@ export default function LoaderPage() {
         ref={neuronCanvasRef}
         className="neuron-bg-canvas"
         style={{
-          position: "absolute",
+          position: "absolute" as const,
           top: 0,
           left: 0,
           width: "100vw",
           height: "100vh",
           zIndex: 0,
-          pointerEvents: "none",
+          pointerEvents: "none" as const,
           background: "transparent",
         }}
       />
+      
       {/* Ball animation canvas */}
       {(screen === "kr" && ballsVisible) || (screen === "typing" && ballsVisible) ? (
         <canvas
           ref={ballsCanvasRef}
           className="balls-canvas"
           style={{
-            position: "absolute",
+            position: "absolute" as const,
             top: 0,
             left: 0,
             width: "100vw",
             height: "100vh",
             zIndex: 2,
-            pointerEvents: "none",
+            pointerEvents: "none" as const,
             background: "transparent",
           }}
         />
       ) : null}
+
       {/* Audio */}
       <audio ref={audioRef} src="/loader-sound.mp3" preload="auto" loop />
+
       {/* UI */}
       {screen === "start" && (
         <div className="start-screen">
@@ -340,22 +421,29 @@ export default function LoaderPage() {
           </button>
         </div>
       )}
+      
       {screen === "loader" && (
         <div className="loading-screen">
           <h1 className="loading-text">{count}%</h1>
         </div>
       )}
+      
       {screen === "kr" && krVisible && (
         <div className="initials-screen">
-          <h1 className="initials-text black-kr" style={{ opacity: krVisible ? 1 : 0 }}>
+          <h1 
+            className="initials-text black-kr" 
+            style={{ opacity: krVisible ? 1 : 0 }}
+          >
             KR
           </h1>
         </div>
       )}
+      
       {screen === "typing" && (
         <div className="initials-screen">
           <h1 className="typewriter-text">
             {typedText}
+            <span style={{ opacity: 0.5 }}>|</span>
           </h1>
         </div>
       )}
