@@ -75,12 +75,18 @@ export default function LoaderPage() {
     if (["loader", "kr", "typing"].includes(screen)) {
       if (audio) {
         audio.currentTime = 0;
-        audio.play().catch(() => {});
+        // Explicitly catch and log play errors to avoid unhandled rejections
+        audio
+          .play()
+          .catch((err) => {
+            // Autoplay blocked or other issue; ignore but log for dev
+            console.warn("Audio play blocked or failed:", err);
+          });
       }
     }
 
     return () => {
-      const audioCleanup = audio;
+      const audioCleanup = audioRef.current;
       if (!["loader", "kr", "typing"].includes(screen) && audioCleanup) {
         audioCleanup.pause();
         audioCleanup.currentTime = 0;
@@ -90,16 +96,20 @@ export default function LoaderPage() {
 
   // Stop audio on page change
   useEffect(() => {
-    const localAudio = audioRef.current;
-
     const stopAudio = () => {
-      if (localAudio) {
-        localAudio.pause();
-        localAudio.currentTime = 0;
+      const audio = audioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
       }
     };
 
-    router.prefetch?.("/home");
+    // Wrap prefetch in try/catch to avoid unhandled promise rejection
+    try {
+      router.prefetch?.("/home");
+    } catch (e) {
+      console.warn("router.prefetch failed:", e);
+    }
 
     return () => {
       stopAudio();
@@ -117,11 +127,16 @@ export default function LoaderPage() {
           audio.currentTime = 0;
         }
         cleanupAnimations();
-        router.push("/home");
+        // Wrap push in try/catch to surface any navigation errors
+        try {
+          router.push("/home");
+        } catch (e) {
+          console.error("router.push('/home') failed:", e);
+        }
       }, 1000);
       return () => clearTimeout(timeout);
     }
-  }, [screen, typedText, router, cleanupAnimations]);
+  }, [screen, typedText, cleanupAnimations, router]);
 
   // Loader progress
   useEffect(() => {
@@ -410,8 +425,7 @@ export default function LoaderPage() {
         }}
       />
 
-      {(screen === "kr" && ballsVisible) ||
-      (screen === "typing" && ballsVisible) ? (
+      {(screen === "kr" && ballsVisible) || (screen === "typing" && ballsVisible) ? (
         <canvas
           ref={ballsCanvasRef}
           className="balls-canvas"
