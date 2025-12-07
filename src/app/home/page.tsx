@@ -1,8 +1,10 @@
 "use client";
 import "./home.css";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { BsFillMoonStarsFill, BsSunFill } from "react-icons/bs";
+
 
 const LIGHT_IMAGE = "/profile.png";
 
@@ -13,8 +15,10 @@ const typewriterLines = [
   "in this era."
 ];
 
-function CreativeDeveloperSection(props: { darkMode: boolean }) {
+
+function CreativeDeveloperSection({ darkMode }: { darkMode: boolean }) {
   const imgSrc = "/profile.png";
+
   return (
     <section className="creative-section">
       <div className="creative-heading-row">
@@ -22,17 +26,19 @@ function CreativeDeveloperSection(props: { darkMode: boolean }) {
         <span className="creative-title-star">✦</span>
         <span className="creative-title">DEVELOPER</span>
       </div>
+
       <div className="creative-content-row">
         <div className="creative-info">
           <p>/ ART DIRECTION</p>
           <p>/ WEB DESIGN (UX/UI)</p>
           <p>/ WEB DEVELOPMENT</p>
         </div>
+
         <div className="creative-photo">
-          <img src={imgSrc} alt="Developer" />
+          <Image src={imgSrc} alt="Developer" width={400} height={400} />
         </div>
       </div>
-      {/* Centered text below image */}
+
       <div className="creative-bio-text">
         <p>
           I’M EXPERIENCED WEB AND UX/UI DESIGNER,
