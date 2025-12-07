@@ -143,6 +143,32 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
     />
   );
 }
+// NEW: scroll text section
+function ScrollTextSection() {
+  return (
+    <section className="scroll-text-section">
+      <header className="content fluid" style={{ ["--count" as any]: 7 }}>
+        <section className="content">
+          <h1>
+            <span aria-hidden="true">I can&nbsp;</span>
+            <span className="sr-only">
+              I can develop, design, build, prototype, solve, collaborate, innovate.
+            </span>
+          </h1>
+          <ul aria-hidden="true">
+            <li style={{ ["--i" as any]: 0 }}>develop.</li>
+            <li style={{ ["--i" as any]: 1 }}>design.</li>
+            <li style={{ ["--i" as any]: 2 }}>build.</li>
+            <li style={{ ["--i" as any]: 3 }}>prototype.</li>
+            <li style={{ ["--i" as any]: 4 }}>solve.</li>
+            <li style={{ ["--i" as any]: 5 }}>collaborate.</li>
+            <li style={{ ["--i" as any]: 6 }}>innovate.</li>
+          </ul>
+        </section>
+      </header>
+    </section>
+  );
+}
 
 export default function HomePage() {
   const [darkMode, setDarkMode] = useState(false);

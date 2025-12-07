@@ -502,3 +502,66 @@ body.dark-mode .neuron-bg-canvas {
 body:not(.dark-mode) .neuron-bg-canvas {
   background: #fff;
 }
+
+.scroll-text-section header {
+  --font-level: 4;
+  --font-size-min: 24;
+  position: sticky;
+  top: calc((var(--count) - 1) * -1lh);
+  line-height: 1.2;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 50vh;
+}
+
+.scroll-text-section header section:first-of-type {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: calc(50vh - 0.5lh);
+}
+
+.scroll-text-section h1 {
+  position: sticky;
+  top: calc(50vh - 0.5lh);
+  font-size: inherit;
+  margin: 0;
+  display: inline-block;
+  height: fit-content;
+  font-weight: 600;
+}
+
+.scroll-text-section ul {
+  font-weight: 600;
+  padding-inline: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.scroll-text-section li {
+  --dimmed: color-mix(in oklch, canvasText, #0000 80%);
+  background: linear-gradient(
+    180deg,
+    var(--dimmed) 0 calc(50vh - 0.5lh),
+    var(--accent, hsl(280 100% 50%)) calc(50vh - 0.55lh) calc(50vh + 0.55lh),
+    var(--dimmed) calc(50vh + 0.5lh)
+  );
+  background-attachment: fixed;
+  color: transparent;
+  background-clip: text;
+}
+
+/* sr-only helper */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
