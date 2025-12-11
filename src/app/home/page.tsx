@@ -13,6 +13,7 @@ const typewriterLines = [
   "in this era.",
 ];
 
+
 function CreativeDeveloperSection(props: { darkMode: boolean }) {
   const imgSrc = "/profile.png";
   return (
@@ -142,6 +143,36 @@ export default function HomePage() {
   const [display, setDisplay] = useState(["", "", "", ""]);
   const [charIdx, setCharIdx] = useState(0);
 
+  const aboutRef = useRef<HTMLHeadingElement | null>(null);
+const [aboutVisible, setAboutVisible] = useState(false);
+
+
+useEffect(() => {
+  const el = aboutRef.current;
+  if (!el) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // in view → show animation
+          setAboutVisible(true);
+        } else {
+          // out of view → hide again so it can replay
+          setAboutVisible(false);
+        }
+      });
+    },
+    {
+      threshold: 0.4, // adjust how much must be visible
+    }
+  );
+
+  observer.observe(el);
+  return () => observer.disconnect();
+}, []);
+
+
   // typewriter effect
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -260,6 +291,22 @@ export default function HomePage() {
       <span>develop.</span>
     </div>
   </div>
+</div>
+
+<div className="about-me-section">
+  <h2
+    ref={aboutRef}
+    className={`about-me-title ${aboutVisible ? "reveal" : ""}`}
+  >
+    <span>A</span>
+    <span>B</span>
+    <span>O</span>
+    <span>U</span>
+    <span>T</span>
+    <span>&nbsp;</span>
+    <span>M</span>
+    <span>E</span>
+  </h2>
 </div>
 
     </>

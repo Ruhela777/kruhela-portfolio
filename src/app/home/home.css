@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&family=Orbitron:wght@700&family=Playfair+Display:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Anton:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap');
 
 :root {
   --bg: #fff;
@@ -533,29 +534,30 @@ body:not(.dark-mode) {
 body.dark-mode .big-i-can {
   color: #ffffff;          /* force white in dark mode */
 }
-/* I CAN row */
 .ican-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
   margin: 80px 0 120px;
   margin-left: 100px;
+  margin-top: 200px;
 }
 
 /* I CAN text */
 .big-i-can {
   position: relative;
   z-index: 2;
-  font-size: 80px;
+  font-size: 100px;
   font-weight: 800;
   font-family: "Audiowide", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1;
 }
 
-/* window: shows exactly one word (by pixels) */
+/* window shows exactly one word */
 .ican-window {
   width: auto;
-  height: 100px;        /* one line height in pixels */
+  height: 130px;                 /* SAFE box > font-size */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -565,40 +567,160 @@ body.dark-mode .big-i-can {
 .ican-track {
   display: flex;
   flex-direction: column;
-  font-size: 80px;
-  line-height: 100px;   /* or whatever you are currently using */
+  font-size: 100px;
+  line-height: normal;           /* let browser choose safe line box */
   font-weight: 800;
   color: #1e87dd;
   font-family: "Audiowide", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  animation: ican-slide 14s linear infinite;
+  animation: ican-slide 8s ease-in-out infinite;  /* a bit faster */
 }
 
-/* every word is exactly 100px tall and centered */
+/* each word sits in a 130px box */
 .ican-track span {
-  height: 100px;
+  height: 130px;                 /* SAME as window height */
   display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* 7 spans (6 words + first repeated) → 6 steps of 130px */
+@keyframes ican-slide {
+  0%   { transform: translateY(0); }
+  12%  { transform: translateY(0); }
+
+  16%  { transform: translateY(-130px); }
+  28%  { transform: translateY(-130px); }
+
+  32%  { transform: translateY(-260px); }
+  44%  { transform: translateY(-260px); }
+
+  48%  { transform: translateY(-390px); }
+  60%  { transform: translateY(-390px); }
+
+  64%  { transform: translateY(-520px); }
+  76%  { transform: translateY(-520px); }
+
+  80%  { transform: translateY(-650px); }
+  92%  { transform: translateY(-650px); }
+
+  100% { transform: translateY(-780px); }  /* 6 * 130 */
+}
+
+/* mobile */
+@media (max-width: 900px) {
+  .ican-row {
+    flex-direction: column;
+    margin-left: 0;
+    gap: 16px;
+  }
+
+  .big-i-can {
+    font-size: 48px;
+  }
+
+  .ican-window {
+    height: 65px;
+  }
+
+  .ican-track {
+    font-size: 48px;
+    animation: ican-slide-mobile 8s ease-in-out infinite;
+  }
+
+  .ican-track span {
+    height: 65px;
+  }
+
+  /* same logic for 65px steps */
+  @keyframes ican-slide-mobile {
+    0%   { transform: translateY(0); }
+    12%  { transform: translateY(0); }
+
+    16%  { transform: translateY(-65px); }
+    28%  { transform: translateY(-65px); }
+
+    32%  { transform: translateY(-130px); }
+    44%  { transform: translateY(-130px); }
+
+    48%  { transform: translateY(-195px); }
+    60%  { transform: translateY(-195px); }
+
+    64%  { transform: translateY(-260px); }
+    76%  { transform: translateY(-260px); }
+
+    80%  { transform: translateY(-325px); }
+    92%  { transform: translateY(-325px); }
+
+    100% { transform: translateY(-390px); }
+  }
+}
+
+
+/* ABOUT ME SECTION */
+.about-me-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 160px 0 80px;
+}
+
+.about-me-title {
+  font-family: "Rubik 80s Fade", system-ui, sans-serif;
+  font-size: 170px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: inline-flex;
+  justify-content: center;
   align-items: center;
 }
 
-/* 7 spans (6 words + repeated) → 6 steps of 100px */
-@keyframes ican-slide {
-  0%   { transform: translateY(0); }
-  14%  { transform: translateY(0); }
+/* base state: hidden letters */
+.about-me-title span {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  margin: 0 -0.01em;
+}
 
-  16%  { transform: translateY(-100px); }
-  30%  { transform: translateY(-100px); }
+/* when visible, animate each span */
+.about-me-title.reveal span {
+  /* slower: 0.9s instead of 0.5s */
+  animation: aboutLetter 0.9s ease-out forwards;
+}
 
-  32%  { transform: translateY(-200px); }
-  46%  { transform: translateY(-200px); }
+/* keyframes unchanged */
+@keyframes aboutLetter {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-  48%  { transform: translateY(-300px); }
-  62%  { transform: translateY(-300px); }
+/* center-out delays – slightly increased for more “wave” feeling */
+.about-me-title.reveal span:nth-child(4),
+.about-me-title.reveal span:nth-child(5) {
+  animation-delay: 0s;
+}
 
-  64%  { transform: translateY(-400px); }
-  78%  { transform: translateY(-400px); }
+.about-me-title.reveal span:nth-child(3),
+.about-me-title.reveal span:nth-child(6) {
+  animation-delay: 0.15s;
+}
 
-  80%  { transform: translateY(-500px); }
-  94%  { transform: translateY(-500px); }
+.about-me-title.reveal span:nth-child(2),
+.about-me-title.reveal span:nth-child(7) {
+  animation-delay: 0.3s;
+}
 
-  100% { transform: translateY(-600px); } /* repeated 'develop' */
+.about-me-title.reveal span:nth-child(1),
+.about-me-title.reveal span:nth-child(8) {
+  animation-delay: 0.45s;
 }
