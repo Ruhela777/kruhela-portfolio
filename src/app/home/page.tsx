@@ -3,6 +3,9 @@ import "./home.css";
 import { useEffect, useRef, useState } from "react";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { BsFillMoonStarsFill, BsSunFill } from "react-icons/bs";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SplitType from "split-type";
 
 const LIGHT_IMAGE = "/profile.png";
 
@@ -12,7 +15,72 @@ const typewriterLines = [
   "Full Stack Developer",
   "in this era.",
 ];
+//ABOUT ME section
+gsap.registerPlugin(ScrollTrigger);
 
+const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const statementBig = sectionRef.current!.querySelector(
+        ".statement-big"
+      ) as HTMLElement | null;
+
+      if (!statementBig) return;
+
+      // SplitType: pass the element, then split into chars
+      const split = new SplitType(statementBig, {
+        types: "chars",
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+          pin: true,
+          // markers: true,
+        },
+      });
+
+      tl.to(split.chars, {
+        opacity: 0,
+        x: () => gsap.utils.random(-400, 400),
+        y: () => gsap.utils.random(-300, 300),
+        z: () => gsap.utils.random(-1000, 1000),
+        rotation: () => gsap.utils.random(-360, 360),
+        scale: 0.1,
+        stagger: { each: 0.005, from: "random" },
+        duration: 3,
+        ease: "power2.in",
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`statement-section ${darkMode ? "dark" : "light"}`}
+    >
+      <div className="statement-center">
+        <div className="statement-small">FOR ME</div>
+
+        <div className="statement-big">
+          <span>CODE</span>
+          <span>IS NOT JUST LOGIC,</span>
+          <span>BUT A LANGUAGE TO</span>
+          <span>DESIGN THE FUTURE I ENVISION.</span>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 function CreativeDeveloperSection(props: { darkMode: boolean }) {
   const imgSrc = "/profile.png";
@@ -172,7 +240,6 @@ useEffect(() => {
   return () => observer.disconnect();
 }, []);
 
-
   // typewriter effect
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -308,6 +375,9 @@ useEffect(() => {
     <span>E</span>
   </h2>
 </div>
+
+<StatementSection/>
+
 
     </>
   );

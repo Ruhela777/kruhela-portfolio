@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tomorrow:wght@700&display=swap');
 
 :root {
   --bg: #fff;
@@ -665,9 +666,9 @@ body.dark-mode .big-i-can {
 }
 
 .about-me-title {
-  font-family: "Rubik 80s Fade", system-ui, sans-serif;
+  font-family: "Anton", Impact, "Arial Narrow", Arial, sans-serif;
   font-size: 170px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;    /* MORE SPACE between letters */
   text-transform: uppercase;
   display: inline-flex;
   justify-content: center;
@@ -679,8 +680,9 @@ body.dark-mode .big-i-can {
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 0.15s ease-out, transform 0.15s ease-out;
-  margin: 0 -0.01em;
+  margin: 0 0.02em;          /* small side margin per letter */
 }
+
 
 /* when visible, animate each span */
 .about-me-title.reveal span {
@@ -723,4 +725,155 @@ body.dark-mode .big-i-can {
 .about-me-title.reveal span:nth-child(1),
 .about-me-title.reveal span:nth-child(8) {
   animation-delay: 0.45s;
+}
+
+
+/*For me CODE
+IS NOT JUST LOGIC, BUT
+A LANGUAGE TO DESIGN
+THE FUTURE I ENVISION.*/
+/* MAIN SECTION */
+.statement-section {
+  position: relative;
+  width: 100%;
+  padding: 40px 0 80px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: "Tomorrow", sans-serif;
+  min-height: 100vh;
+  overflow: hidden;          /* Recommended for scroll-based animations */
+  perspective: 1000px;       /* Gives a 3D context for the scatter effect */
+}
+
+/* Ensure the section color is set for light/dark mode */
+.statement-section {
+  color: black;
+}
+.statement-section.dark {
+  color: white;
+}
+
+.statement-center {
+  max-width: 1100px;
+  padding: 0 60px;
+  text-align: left;
+  margin-right: 170px;
+}
+
+/* Keep the initial fade-up for the "FOR ME" text */
+.statement-small {
+  font-size: 1.1rem;
+  letter-spacing: 0.25rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  /* original fade-up */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.statement-big {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-weight: 700;
+  /* no white-space: nowrap so it can wrap on small screens if needed */
+}
+
+.statement-big span {
+  font-size: 4.2rem;
+  line-height: 1.1;
+  /* no opacity/transform here – GSAP controls chars */
+}
+
+/* SplitType wraps each character in .char */
+.statement-big span .char {
+  display: inline-block;
+  position: relative; /* needed for 3D transforms */
+}
+
+/* fadeUp for the small line */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* BASE: no color here, only layout */
+.statement-section {
+  position: relative;
+  width: 100%;
+  padding: 40px 0 80px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: "Tomorrow", sans-serif;
+  /* let height be content-based so it can grow if needed */
+  min-height: 100vh;
+  overflow: hidden;
+  perspective: 1000px;
+  z-index: 1;
+}
+/* background + text for LIGHT mode (body not dark) */
+body:not(.dark-mode) .statement-section {
+  background-color: #000000; /* black bg */
+  color: #ffffff;            /* white text */
+}
+
+/* background + text for DARK mode (body dark) */
+body.dark-mode .statement-section {
+  background-color: #ffffff; /* white bg */
+  color: #000000;            /* black text */
+}
+.statement-center {
+  max-width: 1400px;      /* was 1100px */
+  width: 100%;
+  padding: 0 40px;        /* a bit less side padding */
+  text-align: left;
+  margin-right: 0;        /* remove extra right shift */
+  margin-left: 0;
+}
+/* "FOR ME" line */
+.statement-small {
+  font-size: 1.1rem;
+  letter-spacing: 0.25rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.statement-big {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.statement-big span {
+  font-size: 4.2rem;
+  line-height: 1.1;
+  white-space: nowrap;    /* force each span into a single line */
+}
+
+.statement-big span .char {
+  display: inline-block;
+  position: relative;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
