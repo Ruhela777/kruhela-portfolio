@@ -3,6 +3,23 @@ import "./home.css";
 import { useEffect, useRef, useState } from "react";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { BsFillMoonStarsFill, BsSunFill } from "react-icons/bs";
+import { 
+  SiReact, 
+  SiHtml5, 
+  SiCss3, 
+  SiJavascript, 
+  SiTailwindcss,
+  SiNodedotjs,
+  SiExpress,
+  SiFlask,
+  SiMysql,
+  SiMongodb,
+  SiGoogle,
+  SiGit,
+  SiVercel,
+  SiFigma
+} from "react-icons/si";
+import { FaDatabase, FaTools, FaBrain, FaServer, FaCode } from "react-icons/fa";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
@@ -76,6 +93,461 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
           <span>IS NOT JUST LOGIC,</span>
           <span>BUT A LANGUAGE TO</span>
           <span>DESIGN THE FUTURE I ENVISION.</span>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const TechStackVisualization = ({
+  darkMode = false,
+}: {
+  darkMode?: boolean;
+}) => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [isRotating, setIsRotating] = useState(true);
+
+  const centerX = 500;
+  const centerY = 500;
+  const radius = 260; // slightly tighter main radius
+
+  // Helper: given index and total, return a symmetric offset index
+  const getCenteredIndex = (idx: number, total: number) =>
+    idx - (total - 1) / 2;
+
+  const rawCategories = [
+    {
+      id: "frontend",
+      label: "Frontend",
+      iconUrl:
+        "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+      angleDeg: -90,
+      color: "#ff6b6b",
+      subIcons: [
+        {
+          name: "React",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+          color: "#61dafb",
+        },
+        {
+          name: "HTML",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+          color: "#e34f26",
+        },
+        {
+          name: "CSS",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+          color: "#1572b6",
+        },
+        {
+          name: "JS",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+          color: "#f7df1e",
+        },
+        {
+          name: "Tailwind",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
+          color: "#06b6d4",
+        },
+      ],
+    },
+    {
+      id: "backend",
+      label: "Backend",
+      iconUrl:
+        "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+      angleDeg: -18,
+      color: "#4ecdc4",
+      subIcons: [
+        {
+          name: "Node",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+          color: "#339933",
+        },
+        {
+          name: "Express",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
+          color: "#000000",
+        },
+        {
+          name: "Flask",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg",
+          color: "#000000",
+        },
+        {
+          name: "APIs",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+          color: "#339933",
+        },
+      ],
+    },
+    {
+      id: "database",
+      label: "Database",
+      iconUrl:
+        "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+      angleDeg: 54,
+      color: "#ffe66d",
+      subIcons: [
+        {
+          name: "MySQL",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+          color: "#4479a1",
+        },
+        {
+          name: "MongoDB",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+          color: "#47a248",
+        },
+      ],
+    },
+    {
+      id: "tools",
+      label: "Tools",
+      iconUrl:
+        "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+      angleDeg: 126,
+      color: "#ff8b94",
+      subIcons: [
+        {
+          name: "Git",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+          color: "#f05032",
+        },
+        {
+          name: "Vercel",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg",
+          color: "#000000",
+        },
+        {
+          name: "Figma",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
+          color: "#f24e1e",
+        },
+      ],
+    },
+    {
+      id: "aiml",
+      label: "AI ML",
+      iconUrl:
+        "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+      angleDeg: 198,
+      color: "#a8e6cf",
+      subIcons: [
+        {
+          name: "OCR",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+          color: "#4285f4",
+        },
+        {
+          name: "Gemini",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+          color: "#4285f4",
+        },
+        {
+          name: "ML Models",
+          iconUrl:
+            "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+          color: "#ff6f00",
+        },
+      ],
+    },
+  ];
+
+  // precompute main icon positions
+  const categories = rawCategories.map((cat) => {
+    const rad = (cat.angleDeg * Math.PI) / 180;
+    return {
+      ...cat,
+      position: {
+        angle: cat.angleDeg,
+        x: Math.cos(rad) * radius,
+        y: Math.sin(rad) * radius,
+      },
+    };
+  });
+
+  const handleMouseEnterCategory = (id: string) => {
+    setHoveredCategory(id);
+    setIsRotating(false);
+  };
+
+  const handleMouseLeaveCategory = () => {
+    setHoveredCategory(null);
+    setIsRotating(true);
+  };
+
+  return (
+    <div
+      className={`tech-stack-visualization ${
+        isRotating ? "tech-stack-rotating" : "tech-stack-rotating-paused"
+      }`}
+    >
+      <svg
+        ref={svgRef}
+        className="tech-stack-svg"
+        viewBox="0 0 1000 1000"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* main spokes */}
+        {categories.map((category, idx) => {
+          const endX = centerX + category.position.x;
+          const endY = centerY + category.position.y;
+          return (
+            <line
+              key={category.id}
+              x1={centerX}
+              y1={centerY}
+              x2={endX}
+              y2={endY}
+              className="tech-stack-line tech-stack-line-animated"
+              stroke="#667eea"
+              strokeWidth="3"
+              opacity="0.6"
+              style={{ animationDelay: `${idx * 0.6}s` }}
+            />
+          );
+        })}
+
+        {/* sub‑branches */}
+        {hoveredCategory &&
+          categories
+            .find((cat) => cat.id === hoveredCategory)
+            ?.subIcons.map((subIcon, idx, arr) => {
+              const mainCategory = categories.find(
+                (cat) => cat.id === hoveredCategory
+              );
+              if (!mainCategory) return null;
+
+              const mainX = centerX + mainCategory.position.x;
+              const mainY = centerY + mainCategory.position.y;
+              const mainAngle =
+                (mainCategory.position.angle * Math.PI) / 180;
+
+              const extendDistance = 110;
+              const perpAngle = mainAngle + Math.PI / 2;
+              const baseSpacing = 90;
+              const centeredIdx = getCenteredIndex(idx, arr.length);
+              const perpOffset = centeredIdx * baseSpacing;
+
+              const extendX = Math.cos(mainAngle) * extendDistance;
+              const extendY = Math.sin(mainAngle) * extendDistance;
+              const perpX = Math.cos(perpAngle) * perpOffset;
+              const perpY = Math.sin(perpAngle) * perpOffset;
+
+              const subX = mainX + extendX + perpX;
+              const subY = mainY + extendY + perpY;
+
+              return (
+                <line
+                  key={`${hoveredCategory}-${idx}`}
+                  x1={mainX}
+                  y1={mainY}
+                  x2={subX}
+                  y2={subY}
+                  className="tech-stack-sub-line tech-stack-sub-line-animated"
+                  stroke="#667eea"
+                  strokeWidth="2"
+                  opacity="0.5"
+                  style={{
+                    animationDelay: `${
+                      categories.findIndex(
+                        (cat) => cat.id === hoveredCategory
+                      ) *
+                        0.6 +
+                      idx * 0.15
+                    }s`,
+                  }}
+                />
+              );
+            })}
+      </svg>
+
+      {/* center KR */}
+      <div className="tech-stack-center">
+        <div className="tech-stack-kr-logo tech-stack-kr-logo-animated">
+          KR
+        </div>
+      </div>
+
+      {/* main icon + sub‑icons */}
+      {categories.map((category, idx) => (
+        <div
+          key={category.id}
+          className="tech-stack-category"
+          style={{
+            left: `${50 + (category.position.x / 1000) * 100}%`,
+            top: `${50 + (category.position.y / 1000) * 100}%`,
+          }}
+          onMouseEnter={() => handleMouseEnterCategory(category.id)}
+          onMouseLeave={handleMouseLeaveCategory}
+        >
+          <div
+            className="tech-stack-category-icon tech-stack-category-icon-animated"
+            style={{ animationDelay: `${idx * 0.6}s` }}
+          >
+            <img
+              src={category.iconUrl}
+              alt={category.label}
+              className="tech-stack-icon-img"
+            />
+          </div>
+          <div className="tech-stack-category-label">
+            {category.label}
+          </div>
+
+          {hoveredCategory === category.id && (
+            <div className="tech-stack-sub-icons">
+              {category.subIcons.map((subIcon, sIdx, arr) => {
+                const mainAngle =
+                  (category.position.angle * Math.PI) / 180;
+                const extendDistance = 110;
+                const perpAngle = mainAngle + Math.PI / 2;
+                const baseSpacing = 90;
+                const centeredIdx = getCenteredIndex(sIdx, arr.length);
+                const perpOffset = centeredIdx * baseSpacing;
+
+                const extendX =
+                  Math.cos(mainAngle) * extendDistance;
+                const extendY =
+                  Math.sin(mainAngle) * extendDistance;
+                const perpX = Math.cos(perpAngle) * perpOffset;
+                const perpY = Math.sin(perpAngle) * perpOffset;
+
+                const offsetX = extendX + perpX;
+                const offsetY = extendY + perpY;
+
+                return (
+                  <div
+                    key={subIcon.name}
+                    className="tech-stack-sub-icon tech-stack-sub-icon-animated"
+                    style={{
+                      left: `${offsetX}px`,
+                      top: `${offsetY}px`,
+                      animationDelay: `${
+                        idx * 0.6 + sIdx * 0.15
+                      }s`,
+                    }}
+                  >
+                    <img
+                      src={subIcon.iconUrl}
+                      alt={subIcon.name}
+                      className="tech-stack-sub-icon-img"
+                    />
+                    <span className="tech-stack-sub-label">
+                      {subIcon.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
+const ProfileImageScrollSection = ({ darkMode = false }: { darkMode?: boolean }) => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const textRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current || !imageRef.current || !textRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Set initial position - above viewport, positioned on the left
+      gsap.set(imageRef.current, {
+        y: -window.innerHeight - 600,
+        x: 0,
+        opacity: 0,
+        scale: 0.8,
+      });
+
+      // Set initial position for text - start from right side, slightly delayed
+      gsap.set(textRef.current, {
+        x: 100,
+        opacity: 0,
+      });
+
+      // Animate image coming down from above on the left
+      gsap.to(imageRef.current, {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "center center",
+          scrub: 1.5,
+          // markers: true,
+        },
+      });
+
+      // Animate text fading in from right
+      gsap.to(textRef.current, {
+        x: 0,
+        opacity: 1,
+        duration: 2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "center center",
+          scrub: 1.5,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`profile-scroll-section ${darkMode ? "dark" : "light"}`}
+    >
+      <div className="profile-scroll-container">
+        <div className="profile-scroll-image-wrapper">
+          <img
+            ref={imageRef}
+            src="/profile.png"
+            alt="Profile"
+            className="profile-scroll-image"
+          />
+        </div>
+        <div ref={textRef} className="profile-scroll-text">
+          <h2 className="profile-scroll-heading">Hey I'm <br />Kritika Ruhela......</h2>
+          <p className="profile-scroll-paragraph">
+            I'm a full-stack-minded developer and AI enthusiast who blends design, code, and intelligence to build digital products with purpose. From clean, scalable interfaces to smart, data-driven systems, I transform ideas into experiences that feel intuitive, fast, and alive.
+          </p>
+          <p className="profile-scroll-paragraph">
+            Whether it's crafting a modern web presence, engineering AI-powered applications, or prototyping solutions for real-world problems, I focus on creating technology that works hard, scales smart, and leaves an impact.
+          </p>
+          <p className="profile-scroll-paragraph">
+            I don't just build projects — I design solutions, engineer experiences, and push ideas beyond the expected.
+          </p>
         </div>
       </div>
     </section>
@@ -214,6 +686,9 @@ export default function HomePage() {
   const aboutRef = useRef<HTMLHeadingElement | null>(null);
 const [aboutVisible, setAboutVisible] = useState(false);
 
+const techStackRef = useRef<HTMLHeadingElement | null>(null);
+const [techStackVisible, setTechStackVisible] = useState(false);
+
 
 useEffect(() => {
   const el = aboutRef.current;
@@ -228,6 +703,31 @@ useEffect(() => {
         } else {
           // out of view → hide again so it can replay
           setAboutVisible(false);
+        }
+      });
+    },
+    {
+      threshold: 0.4, // adjust how much must be visible
+    }
+  );
+
+  observer.observe(el);
+  return () => observer.disconnect();
+}, []);
+
+useEffect(() => {
+  const el = techStackRef.current;
+  if (!el) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // in view → show animation
+          setTechStackVisible(true);
+        } else {
+          // out of view → hide again so it can replay
+          setTechStackVisible(false);
         }
       });
     },
@@ -377,6 +877,30 @@ useEffect(() => {
 </div>
 
 <StatementSection/>
+
+<ProfileImageScrollSection darkMode={darkMode} />
+
+<div className="tech-stack-section">
+  <h2
+    ref={techStackRef}
+    className={`tech-stack-title ${techStackVisible ? "reveal" : ""}`}
+  >
+    <span>T</span>
+    <span>E</span>
+    <span>C</span>
+    <span>H</span>
+    <span>&nbsp;</span>
+    <span>S</span>
+    <span>T</span>
+    <span>A</span>
+    <span>C</span>
+    <span>K</span>
+  </h2>
+</div>
+
+<div className="tech-stack-viz-container">
+  <TechStackVisualization darkMode={darkMode} />
+</div>
 
 
     </>
