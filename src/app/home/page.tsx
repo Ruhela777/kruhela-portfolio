@@ -3,11 +3,11 @@ import "./home.css";
 import { useEffect, useRef, useState } from "react";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 import { BsFillMoonStarsFill, BsSunFill } from "react-icons/bs";
-import { 
-  SiReact, 
-  SiHtml5, 
-  SiCss3, 
-  SiJavascript, 
+import {
+  SiReact,
+  SiHtml5,
+  SiCss3,
+  SiJavascript,
   SiTailwindcss,
   SiNodedotjs,
   SiExpress,
@@ -17,7 +17,7 @@ import {
   SiGoogle,
   SiGit,
   SiVercel,
-  SiFigma
+  SiFigma,
 } from "react-icons/si";
 import { FaDatabase, FaTools, FaBrain, FaServer, FaCode } from "react-icons/fa";
 import gsap from "gsap";
@@ -32,8 +32,10 @@ const typewriterLines = [
   "Full Stack Developer",
   "in this era.",
 ];
-//ABOUT ME section
+
 gsap.registerPlugin(ScrollTrigger);
+
+// ---------------- STATEMENT SECTION ----------------
 
 const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -48,7 +50,6 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
 
       if (!statementBig) return;
 
-      // SplitType: pass the element, then split into chars
       const split = new SplitType(statementBig, {
         types: "chars",
       });
@@ -60,7 +61,6 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
           end: "bottom top",
           scrub: 1.5,
           pin: true,
-          // markers: true,
         },
       });
 
@@ -99,6 +99,8 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
   );
 };
 
+// ---------------- TECH STACK VISUALIZATION ----------------
+
 const TechStackVisualization = ({
   darkMode = false,
 }: {
@@ -110,9 +112,8 @@ const TechStackVisualization = ({
 
   const centerX = 500;
   const centerY = 500;
-  const radius = 260; // slightly tighter main radius
+  const radius = 260;
 
-  // Helper: given index and total, return a symmetric offset index
   const getCenteredIndex = (idx: number, total: number) =>
     idx - (total - 1) / 2;
 
@@ -271,7 +272,6 @@ const TechStackVisualization = ({
     },
   ];
 
-  // precompute main icon positions
   const categories = rawCategories.map((cat) => {
     const rad = (cat.angleDeg * Math.PI) / 180;
     return {
@@ -306,7 +306,6 @@ const TechStackVisualization = ({
         viewBox="0 0 1000 1000"
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* main spokes */}
         {categories.map((category, idx) => {
           const endX = centerX + category.position.x;
           const endY = centerY + category.position.y;
@@ -326,7 +325,6 @@ const TechStackVisualization = ({
           );
         })}
 
-        {/* sub‑branches */}
         {hoveredCategory &&
           categories
             .find((cat) => cat.id === hoveredCategory)
@@ -380,14 +378,12 @@ const TechStackVisualization = ({
             })}
       </svg>
 
-      {/* center KR */}
       <div className="tech-stack-center">
         <div className="tech-stack-kr-logo tech-stack-kr-logo-animated">
           KR
         </div>
       </div>
 
-      {/* main icon + sub‑icons */}
       {categories.map((category, idx) => (
         <div
           key={category.id}
@@ -465,8 +461,13 @@ const TechStackVisualization = ({
   );
 };
 
+// ---------------- PROFILE SCROLL SECTION ----------------
 
-const ProfileImageScrollSection = ({ darkMode = false }: { darkMode?: boolean }) => {
+const ProfileImageScrollSection = ({
+  darkMode = false,
+}: {
+  darkMode?: boolean;
+}) => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
@@ -475,7 +476,6 @@ const ProfileImageScrollSection = ({ darkMode = false }: { darkMode?: boolean })
     if (!sectionRef.current || !imageRef.current || !textRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Set initial position - above viewport, positioned on the left
       gsap.set(imageRef.current, {
         y: -window.innerHeight - 600,
         x: 0,
@@ -483,13 +483,11 @@ const ProfileImageScrollSection = ({ darkMode = false }: { darkMode?: boolean })
         scale: 0.8,
       });
 
-      // Set initial position for text - start from right side, slightly delayed
       gsap.set(textRef.current, {
         x: 100,
         opacity: 0,
       });
 
-      // Animate image coming down from above on the left
       gsap.to(imageRef.current, {
         y: 0,
         opacity: 1,
@@ -501,11 +499,9 @@ const ProfileImageScrollSection = ({ darkMode = false }: { darkMode?: boolean })
           start: "top bottom",
           end: "center center",
           scrub: 1.5,
-          // markers: true,
         },
       });
 
-      // Animate text fading in from right
       gsap.to(textRef.current, {
         x: 0,
         opacity: 1,
@@ -538,21 +534,34 @@ const ProfileImageScrollSection = ({ darkMode = false }: { darkMode?: boolean })
           />
         </div>
         <div ref={textRef} className="profile-scroll-text">
-          <h2 className="profile-scroll-heading">Hey I'm <br />Kritika Ruhela......</h2>
+          <h2 className="profile-scroll-heading">
+            Hey I&apos;m <br />
+            Kritika Ruhela......
+          </h2>
           <p className="profile-scroll-paragraph">
-            I'm a full-stack-minded developer and AI enthusiast who blends design, code, and intelligence to build digital products with purpose. From clean, scalable interfaces to smart, data-driven systems, I transform ideas into experiences that feel intuitive, fast, and alive.
+            I&apos;m a full-stack-minded developer and AI enthusiast who blends
+            design, code, and intelligence to build digital products with
+            purpose. From clean, scalable interfaces to smart, data-driven
+            systems, I transform ideas into experiences that feel intuitive,
+            fast, and alive.
           </p>
           <p className="profile-scroll-paragraph">
-            Whether it's crafting a modern web presence, engineering AI-powered applications, or prototyping solutions for real-world problems, I focus on creating technology that works hard, scales smart, and leaves an impact.
+            Whether it&apos;s crafting a modern web presence, engineering
+            AI-powered applications, or prototyping solutions for real-world
+            problems, I focus on creating technology that works hard, scales
+            smart, and leaves an impact.
           </p>
           <p className="profile-scroll-paragraph">
-            I don't just build projects — I design solutions, engineer experiences, and push ideas beyond the expected.
+            I don&apos;t just build projects — I design solutions, engineer
+            experiences, and push ideas beyond the expected.
           </p>
         </div>
       </div>
     </section>
   );
 };
+
+// ---------------- CREATIVE DEVELOPER SECTION ----------------
 
 function CreativeDeveloperSection(props: { darkMode: boolean }) {
   const imgSrc = "/profile.png";
@@ -585,6 +594,8 @@ function CreativeDeveloperSection(props: { darkMode: boolean }) {
     </section>
   );
 }
+
+// ---------------- NEURON BACKGROUND ----------------
 
 function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -675,75 +686,220 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
     />
   );
 }
+// ---------------- PROJECTS SECTION ----------------
+const projects = [
+  {
+    id: "GreenPrompt",
+    name: "GreenPrompt",
+    thumbnail: "/projects/greenprompt-thumb.png",
+  },
+  {
+    id: "DreamPartner",
+    name: "DreamPartner",
+    thumbnail: "/projects/dreampartner-thumb.png",
+  },
+  {
+    id: "KASKA",
+    name: "KASKA",
+    thumbnail: "/projects/KASKA-thumb.png",
+  },
+  {
+    id: "SpotifyClone",
+    name: "SpotifyClone",
+    thumbnail: "/projects/spotifyclone-thumb.jpg",
+  },
+];
+function SelectedProjectsSection() {
+  const [hoveredProject, setHoveredProject] = useState<
+    (typeof projects)[number] | null
+  >(null);
+
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [isUserHoveringStrip, setIsUserHoveringStrip] = useState(false);
+
+  // auto-loop horizontal scroll
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const speed = 0.5; // px per frame
+    let animationFrameId: number;
+
+    // width of one full set of items
+    const halfWidth = scroller.scrollWidth / 2;
+
+    const step = () => {
+      if (!isUserHoveringStrip) {
+        // advance
+        scroller.scrollLeft += speed;
+
+        // when we scrolled past one full set, jump back by that width
+        if (scroller.scrollLeft >= halfWidth) {
+          scroller.scrollLeft -= halfWidth;
+        }
+      }
+      animationFrameId = requestAnimationFrame(step);
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isUserHoveringStrip]);
+
+  // data duplicated so loop looks continuous
+  const loopItems = [...projects, ...projects];
+
+  return (
+    <section className="selected-projects-section">
+      {/* blue background */}
+      <div className="selected-bg" />
+
+      {/* concentric circles overlay */}
+      <div className="selected-circles-overlay" />
+
+      {/* your silhouette centered behind everything */}
+      <div className="selected-photo-wrapper">
+        <img
+          src="/me-projects.png"
+          alt="Kritika silhouette"
+          className="selected-photo"
+        />
+        <div className="selected-photo-overlay" />
+      </div>
+
+      {/* LEFT: text */}
+      <div className="selected-left">
+        <div className="selected-text-block">
+          <h2 className="selected-heading">
+            <span className="selected-heading-main">PROJECTS</span>
+          </h2>
+          <p className="selected-description">
+            Every project I create has a story behind it. It&apos;s not just
+            about “making a website.” It&apos;s about exploring an idea,
+            experimenting, failing a few times, and then finally watching it
+            come alive on screen.
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT: preview + horizontal scroller */}
+      <div className="selected-right">
+        {hoveredProject && (
+          <div className="selected-main-preview selected-main-preview-visible">
+            <div className="selected-main-inner">
+              <div className="selected-main-image-wrapper">
+                <img
+                  src={hoveredProject.thumbnail}
+                  alt={hoveredProject.name}
+                  className="selected-main-image"
+                />
+              </div>
+              <h3 className="selected-main-title">
+                {hoveredProject.name}
+              </h3>
+            </div>
+          </div>
+        )}
+
+        <div className="selected-scroller-wrapper">
+          <div
+            className="selected-scroller"
+            ref={scrollerRef}
+            onMouseEnter={() => setIsUserHoveringStrip(true)}
+            onMouseLeave={() => setIsUserHoveringStrip(false)}
+          >
+            {loopItems.map((project, index) => (
+              <button
+                key={`${project.id}-${index}`}
+                className="selected-scroll-item"
+                onMouseEnter={() => setHoveredProject(project)}
+                onMouseLeave={() => setHoveredProject(null)}
+                type="button"
+              >
+                <div className="selected-scroll-thumb">
+                  <img
+                    src={project.thumbnail}
+                    alt={project.name}
+                    className="selected-scroll-thumb-img"
+                  />
+                </div>
+                <span className="selected-scroll-name">
+                  {project.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+// ---------------- HOME PAGE ----------------
 
 export default function HomePage() {
-  // ✅ default dark mode = true
   const [darkMode, setDarkMode] = useState(true);
   const [currentLine, setCurrentLine] = useState(0);
   const [display, setDisplay] = useState(["", "", "", ""]);
   const [charIdx, setCharIdx] = useState(0);
 
   const aboutRef = useRef<HTMLHeadingElement | null>(null);
-const [aboutVisible, setAboutVisible] = useState(false);
+  const [aboutVisible, setAboutVisible] = useState(false);
 
-const techStackRef = useRef<HTMLHeadingElement | null>(null);
-const [techStackVisible, setTechStackVisible] = useState(false);
+  const techStackRef = useRef<HTMLHeadingElement | null>(null);
+  const [techStackVisible, setTechStackVisible] = useState(false);
 
+  useEffect(() => {
+    const el = aboutRef.current;
+    if (!el) return;
 
-useEffect(() => {
-  const el = aboutRef.current;
-  if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setAboutVisible(true);
+          } else {
+            setAboutVisible(false);
+          }
+        });
+      },
+      {
+        threshold: 0.4,
+      }
+    );
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // in view → show animation
-          setAboutVisible(true);
-        } else {
-          // out of view → hide again so it can replay
-          setAboutVisible(false);
-        }
-      });
-    },
-    {
-      threshold: 0.4, // adjust how much must be visible
-    }
-  );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-  observer.observe(el);
-  return () => observer.disconnect();
-}, []);
+  useEffect(() => {
+    const el = techStackRef.current;
+    if (!el) return;
 
-useEffect(() => {
-  const el = techStackRef.current;
-  if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTechStackVisible(true);
+          } else {
+            setTechStackVisible(false);
+          }
+        });
+      },
+      {
+        threshold: 0.4,
+      }
+    );
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // in view → show animation
-          setTechStackVisible(true);
-        } else {
-          // out of view → hide again so it can replay
-          setTechStackVisible(false);
-        }
-      });
-    },
-    {
-      threshold: 0.4, // adjust how much must be visible
-    }
-  );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-  observer.observe(el);
-  return () => observer.disconnect();
-}, []);
-
-  // typewriter effect
+  // typewriter
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     const text = typewriterLines[currentLine];
+
     if (charIdx < text.length) {
       timeout = setTimeout(() => {
         setDisplay((prev) => {
@@ -768,7 +924,6 @@ useEffect(() => {
     return () => clearTimeout(timeout);
   }, [charIdx, currentLine]);
 
-  // apply body class, and ensure dark on first render
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
   }, [darkMode]);
@@ -844,65 +999,65 @@ useEffect(() => {
       </div>
 
       <div className="ican-row">
-  <div className={`big-i-can ${darkMode ? "dark" : ""}`}>I can</div>
+        <div className={`big-i-can ${darkMode ? "dark" : ""}`}>I can</div>
 
-  <div className="ican-window">
-    <div className="ican-track">
-      <span>develop.</span>
-      <span>innovate.</span>
-      <span>design.</span>
-      <span>build.</span>
-      <span>prototype.</span>
-      <span>collaborate.</span>
-      {/* repeat first word for smooth loop */}
-      <span>develop.</span>
-    </div>
-  </div>
-</div>
+        <div className="ican-window">
+          <div className="ican-track">
+            <span>develop.</span>
+            <span>innovate.</span>
+            <span>design.</span>
+            <span>build.</span>
+            <span>prototype.</span>
+            <span>collaborate.</span>
+            <span>develop.</span>
+          </div>
+        </div>
+      </div>
 
-<div className="about-me-section">
-  <h2
-    ref={aboutRef}
-    className={`about-me-title ${aboutVisible ? "reveal" : ""}`}
-  >
-    <span>A</span>
-    <span>B</span>
-    <span>O</span>
-    <span>U</span>
-    <span>T</span>
-    <span>&nbsp;</span>
-    <span>M</span>
-    <span>E</span>
-  </h2>
-</div>
+      <div className="about-me-section">
+        <h2
+          ref={aboutRef}
+          className={`about-me-title ${aboutVisible ? "reveal" : ""}`}
+        >
+          <span>A</span>
+          <span>B</span>
+          <span>O</span>
+          <span>U</span>
+          <span>T</span>
+          <span>&nbsp;</span>
+          <span>M</span>
+          <span>E</span>
+        </h2>
+      </div>
 
-<StatementSection/>
+      <StatementSection />
 
-<ProfileImageScrollSection darkMode={darkMode} />
+      <ProfileImageScrollSection darkMode={darkMode} />
 
-<div className="tech-stack-section">
-  <h2
-    ref={techStackRef}
-    className={`tech-stack-title ${techStackVisible ? "reveal" : ""}`}
-  >
-    <span>T</span>
-    <span>E</span>
-    <span>C</span>
-    <span>H</span>
-    <span>&nbsp;</span>
-    <span>S</span>
-    <span>T</span>
-    <span>A</span>
-    <span>C</span>
-    <span>K</span>
-  </h2>
-</div>
+      <div className="tech-stack-section">
+        <h2
+          ref={techStackRef}
+          className={`tech-stack-title ${techStackVisible ? "reveal" : ""}`}
+        >
+          <span>T</span>
+          <span>E</span>
+          <span>C</span>
+          <span>H</span>
+          <span>&nbsp;</span>
+          <span>S</span>
+          <span>T</span>
+          <span>A</span>
+          <span>C</span>
+          <span>K</span>
+        </h2>
+      </div>
 
-<div className="tech-stack-viz-container">
-  <TechStackVisualization darkMode={darkMode} />
-</div>
+      <div className="tech-stack-viz-container">
+        <TechStackVisualization darkMode={darkMode} />
+      </div>
 
-
+      {/* NEW SELECTED PROJECTS SECTION */}
+      <SelectedProjectsSection />
     </>
   );
 }
