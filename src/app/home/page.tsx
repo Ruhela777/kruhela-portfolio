@@ -23,6 +23,7 @@ import { FaDatabase, FaTools, FaBrain, FaServer, FaCode } from "react-icons/fa";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
+import Link from "next/link";
 
 const LIGHT_IMAGE = "/profile.png";
 
@@ -709,6 +710,7 @@ const projects = [
     thumbnail: "/projects/spotifyclone-thumb.jpg",
   },
 ];
+
 function SelectedProjectsSection() {
   const [hoveredProject, setHoveredProject] = useState<
     (typeof projects)[number] | null
@@ -802,32 +804,38 @@ function SelectedProjectsSection() {
 
         <div className="selected-scroller-wrapper">
           <div
-            className="selected-scroller"
-            ref={scrollerRef}
-            onMouseEnter={() => setIsUserHoveringStrip(true)}
-            onMouseLeave={() => setIsUserHoveringStrip(false)}
-          >
-            {loopItems.map((project, index) => (
-              <button
-                key={`${project.id}-${index}`}
-                className="selected-scroll-item"
-                onMouseEnter={() => setHoveredProject(project)}
-                onMouseLeave={() => setHoveredProject(null)}
-                type="button"
-              >
-                <div className="selected-scroll-thumb">
-                  <img
-                    src={project.thumbnail}
-                    alt={project.name}
-                    className="selected-scroll-thumb-img"
-                  />
-                </div>
-                <span className="selected-scroll-name">
-                  {project.name}
-                </span>
-              </button>
-            ))}
-          </div>
+  className="selected-scroller"
+  ref={scrollerRef}
+  onMouseEnter={() => setIsUserHoveringStrip(true)}
+  onMouseLeave={() => setIsUserHoveringStrip(false)}
+>
+  {loopItems.map((project, index) => (
+    <Link
+      key={`${project.id}-${index}`}
+      href={`/projects/${project.id.toLowerCase()}`}
+      className="selected-scroll-item-link"
+    >
+      <button
+        className="selected-scroll-item"
+        type="button"
+        onMouseEnter={() => setHoveredProject(project)}
+        onMouseLeave={() => setHoveredProject(null)}
+      >
+        <div className="selected-scroll-thumb">
+          <img
+            src={project.thumbnail}
+            alt={project.name}
+            className="selected-scroll-thumb-img"
+          />
+        </div>
+        <span className="selected-scroll-name">
+          {project.name}
+        </span>
+      </button>
+    </Link>
+  ))}
+</div>
+
         </div>
       </div>
     </section>

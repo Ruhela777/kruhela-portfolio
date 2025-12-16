@@ -1718,3 +1718,8 @@ body.dark-mode .tech-stack-sub-icon {
   opacity: 0.45;           /* slightly lower so it melts into the bg */
   mix-blend-mode: screen;
 }
+.selected-scroll-item-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+}
