@@ -1070,45 +1070,54 @@ function SelectedProjectsSection() {
           </div>
         )}
 
-        <div className="selected-scroller-wrapper">
+        {/* wrapper row to nudge scroller right */}
+        <div
+          className="selected-scroller-row"
+          style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        >
           <div
-  className="selected-scroller"
-  ref={scrollerRef}
-  onMouseEnter={() => setIsUserHoveringStrip(true)}
-  onMouseLeave={() => setIsUserHoveringStrip(false)}
->
-  {loopItems.map((project, index) => (
-    <Link
-      key={`${project.id}-${index}`}
-      href={`/projects/${project.id.toLowerCase()}`}
-      className="selected-scroll-item-link"
-    >
-      <button
-        className="selected-scroll-item"
-        type="button"
-        onMouseEnter={() => setHoveredProject(project)}
-        onMouseLeave={() => setHoveredProject(null)}
-      >
-        <div className="selected-scroll-thumb">
-          <img
-            src={project.thumbnail}
-            alt={project.name}
-            className="selected-scroll-thumb-img"
-          />
-        </div>
-        <span className="selected-scroll-name">
-          {project.name}
-        </span>
-      </button>
-    </Link>
-  ))}
-</div>
-
+            className="selected-scroller-wrapper"
+            style={{ marginLeft: "2rem" }} // shift whole strip to the right
+          >
+            <div
+              className="selected-scroller"
+              ref={scrollerRef}
+              onMouseEnter={() => setIsUserHoveringStrip(true)}
+              onMouseLeave={() => setIsUserHoveringStrip(false)}
+            >
+              {loopItems.map((project, index) => (
+                <Link
+                  key={`${project.id}-${index}`}
+                  href={`/projects/${project.id.toLowerCase()}`}
+                  className="selected-scroll-item-link"
+                >
+                  <button
+                    className="selected-scroll-item"
+                    type="button"
+                    onMouseEnter={() => setHoveredProject(project)}
+                    onMouseLeave={() => setHoveredProject(null)}
+                  >
+                    <div className="selected-scroll-thumb">
+                      <img
+                        src={project.thumbnail}
+                        alt={project.name}
+                        className="selected-scroll-thumb-img"
+                      />
+                    </div>
+                    <span className="selected-scroll-name">
+                      {project.name}
+                    </span>
+                  </button>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 
 // ---------------- HOME PAGE ----------------
