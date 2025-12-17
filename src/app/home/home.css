@@ -1433,7 +1433,7 @@ body.dark-mode .tech-stack-sub-icon {
 
 .selected-projects-section {
   position: relative;
-  min-height: 100vh;
+  min-height: 110vh;
   width: 100%;
   display: flex;
   align-items: stretch;
@@ -1517,6 +1517,7 @@ body.dark-mode .tech-stack-sub-icon {
   flex-direction: column;
   justify-content: flex-end;
   padding: 3rem 3rem 2.5rem 3rem;
+  margin-bottom: 30px;
 }
 
 
@@ -1647,6 +1648,7 @@ body.dark-mode .tech-stack-sub-icon {
   justify-content: flex-end;
   padding: 3rem 3rem 2rem 1.5rem; /* adjust as you like */
   gap: 1.25rem;
+  margin-bottom: 30px;
 }
 
 /* big preview card container (already used in TSX but missing in CSS) */
@@ -1722,4 +1724,264 @@ body.dark-mode .tech-stack-sub-icon {
   text-decoration: none;
   color: inherit;
   display: inline-flex;
+}
+
+/* =========================
+   SERVICES SECTION
+   ========================= */
+
+.services-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  color: #f9fafb;
+  background: radial-gradient(circle at center, #050816 0%, #020617 55%, #000 100%);
+  margin-top: 100px;
+}
+
+.services-inner {
+  z-index : 1;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  /* push grid content further down */
+  padding: 12rem clamp(2rem, 6vw, 5rem) 4rem;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.1fr;
+  align-items: center;
+}
+
+.services-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(2px 2px at 12% 18%, rgba(255, 255, 255, 0.8) 0, transparent 55%),
+    radial-gradient(1.5px 1.5px at 82% 26%, rgba(255, 255, 255, 0.6) 0, transparent 55%),
+    radial-gradient(1.7px 1.7px at 30% 68%, rgba(255, 255, 255, 0.55) 0, transparent 60%),
+    radial-gradient(1.4px 1.4px at 64% 82%, rgba(255, 255, 255, 0.5) 0, transparent 55%),
+    radial-gradient(1.3px 1.3px at 50% 40%, rgba(255, 255, 255, 0.65) 0, transparent 60%);
+  opacity: 0.6;
+  animation: servicesStarsTwinkle 7s ease-in-out infinite alternate;
+}
+
+/* soft twinkle animation */
+@keyframes servicesStarsTwinkle {
+  0% {
+    opacity: 0.3;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate3d(4px, -6px, 0) scale(1.02);
+  }
+  100% {
+    opacity: 0.4;
+    transform: translate3d(-4px, 4px, 0) scale(1.01);
+  }
+}
+/* SERVICES heading same style as ABOUT ME */
+
+.services-title {
+  position: absolute;
+  /* move heading closer to very top */
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Anton", Impact, "Arial Narrow", Arial, sans-serif;
+  font-size: 170px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* base state: hidden letters */
+.services-title span {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  margin: 0 0.02em;
+}
+
+/* when visible, animate each span (reuse aboutLetter) */
+.services-title.reveal span {
+  animation: aboutLetter 0.9s ease-out forwards;
+}
+
+/* same center-out delays as ABOUT ME (8 letters) */
+.services-title.reveal span:nth-child(4),
+.services-title.reveal span:nth-child(5) {
+  animation-delay: 0s;
+}
+
+.services-title.reveal span:nth-child(3),
+.services-title.reveal span:nth-child(6) {
+  animation-delay: 0.15s;
+}
+
+.services-title.reveal span:nth-child(2),
+.services-title.reveal span:nth-child(7) {
+  animation-delay: 0.3s;
+}
+
+.services-title.reveal span:nth-child(1),
+.services-title.reveal span:nth-child(8) {
+  animation-delay: 0.45s;
+}
+
+/* left description */
+
+.services-left {
+  align-self: flex-end;
+}
+
+.services-description {
+  max-width: 520px;
+  font-size: 1.3rem;
+  line-height: 1.7;
+  color: rgba(226, 232, 240, 0.9);
+  font-family: "Electrolize", sans-serif;
+  margin-bottom: 150px;
+  text-align: justify;
+}
+
+/* center circular image */
+
+.services-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.services-pie-wrapper {
+  position: relative;
+  width: clamp(220px, 24vw, 320px);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  overflow: hidden; /* clip to circle */
+}
+
+.services-pie {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* crop to fill circle */
+  border-radius: 50%; /* ensure circle */
+  filter:
+    saturate(1.05)
+    brightness(1.1)
+    drop-shadow(0 26px 70px rgba(0, 0, 0, 0.9));
+  transition: transform 0.7s ease-out, filter 0.4s ease-out;
+}
+
+/* optional: a slight hover emphasis when active */
+.services-center:hover .services-pie {
+  transform: translateY(-4px) scale(1.02);
+  filter:
+    saturate(1.15)
+    brightness(1.18)
+    drop-shadow(0 34px 90px rgba(15, 23, 42, 0.9));
+}
+
+.services-pie-glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 0%, rgba(244, 114, 182, 0.35), transparent 60%),
+    radial-gradient(circle at 70% 100%, rgba(56, 189, 248, 0.35), transparent 60%);
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* right title */
+
+.services-right {
+  text-align: left;
+  align-self: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.services-main-title {
+  font-size: 2.5rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: "Orbitron", sans-serif;
+}
+
+/* dots below for manual switch */
+
+.services-dots {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.6rem;
+}
+
+.services-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(148, 163, 184, 0.6);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, width 0.2s ease;
+}
+
+.services-dot-active {
+  width: 18px;
+  background: #38bdf8;
+  transform: scale(1.05);
+}
+
+/* responsive */
+
+@media (max-width: 900px) {
+  .services-inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    row-gap: 2.5rem;
+    padding-inline: 1.5rem;
+    height: auto; /* allow full content on small screens */
+     padding-top: 9rem;
+    padding-bottom: 4rem;
+  }
+
+  .services-title {
+    top: -0.5rem;
+    font-size: 110px;
+  }
+
+  .services-left {
+    order: 3;
+    text-align: center;
+    align-self: center;
+    margin-bottom: 0;
+  }
+
+  .services-right {
+    order: 1;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .services-center {
+    order: 2;
+  }
+
+  .services-description {
+    margin-inline: auto;
+    margin-bottom: 2rem;
+  }
 }

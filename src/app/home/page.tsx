@@ -687,6 +687,175 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
     />
   );
 }
+// ---------------- SERVICES SECTION ----------------
+
+const services = [
+  {
+    id: "creative-web-experiences",
+    title: "Creative Web Experiences",
+    subtitle:
+      "Design and build visually rich, responsive portfolio and brand websites with smooth animations, interactions, and strong UX using React/Next.js.",
+    image:
+      "https://www.pranathiss.com/blog/wp-content/uploads/Art-of-Web-Design-Balancing-Creativity-and-Functionality.png",
+  },
+  {
+    id: "fullstack-web-applications",
+    title: "Full‑Stack Web Applications",
+    subtitle:
+      "Develop end‑to‑end products: modern frontends, secure Node/Express or Flask backends, and MongoDB/MySQL databases, including API design and integration.",
+    image:
+      "https://www.mascotsoftware.in/upload_assets/blogs/full-stack-web-developer.png",
+  },
+  {
+    id: "ai-powered-features-automation",
+    title: "AI‑Powered Features & Automation",
+    subtitle:
+      "Integrate AI models and APIs (chat, OCR, recommendations) into web apps to create smart assistants, content tools, and data‑driven experiences.",
+    image:
+      "https://static.vecteezy.com/system/resources/previews/056/410/456/non_2x/ai-powered-automation-streamlining-processes-with-integrated-systems-free-png.png",
+  },
+  {
+    id: "ongoing-support-optimization-deployment",
+    title: "Ongoing Support, Optimization & Deployment",
+    subtitle:
+      "Handle deployment (Vercel etc.), performance tuning, bug fixes, refactors, and continuous updates to keep projects fast, stable, and scalable.",
+    image:
+      "https://mattermost.com/wp-content/uploads/2022/08/10_Deploy_React_Kubernetes_Docker@2x.webp",
+  },
+];
+
+function ServicesSection() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [servicesTitleVisible, setServicesTitleVisible] = useState(false);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom+=400 top",
+          scrub: 1.2,
+          pin: true,
+        },
+      });
+
+      tl.to(".services-pie", {
+        rotation: 18,
+        duration: 1.5,
+        ease: "power2.out",
+      }).to(
+        ".services-pie",
+        {
+          rotation: -10,
+          duration: 1.5,
+          ease: "power2.inOut",
+        },
+        ">",
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // auto‑cycle active service
+  useEffect(() => {
+    const id = setInterval(
+      () => setActiveIndex((prev) => (prev + 1) % services.length),
+      2600,
+    );
+    return () => clearInterval(id);
+  }, []);
+
+  // SERVICES title reveal like ABOUT ME
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setServicesTitleVisible(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.4 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const activeService = services[activeIndex];
+
+  return (
+    <section ref={sectionRef} className="services-section">
+      {/* star background layer */}
+      <div className="services-stars" />
+
+      <div className="services-inner">
+        {/* heading like ABOUT ME */}
+        <h2
+          ref={titleRef}
+          className={`services-title ${servicesTitleVisible ? "reveal" : ""}`}
+        >
+          <span>S</span>
+          <span>E</span>
+          <span>R</span>
+          <span>V</span>
+          <span>I</span>
+          <span>C</span>
+          <span>E</span>
+          <span>S</span>
+        </h2>
+
+        {/* left text */}
+        <div className="services-left">
+          <p className="services-description">{activeService.subtitle}</p>
+        </div>
+
+        {/* center circular image */}
+        <div className="services-center">
+          <div className="services-pie-wrapper">
+            <img
+              src={activeService.image}
+              alt={activeService.title}
+              className="services-pie"
+            />
+            <div className="services-pie-glow" />
+          </div>
+        </div>
+
+        {/* right title */}
+        <div className="services-right">
+          <span className="services-main-title">
+            {activeService.title}
+          </span>
+        </div>
+
+        {/* dots for manual switch */}
+        <div className="services-dots">
+          {services.map((svc, idx) => (
+            <button
+              key={svc.id}
+              type="button"
+              className={`services-dot ${
+                idx === activeIndex ? "services-dot-active" : ""
+              }`}
+              onClick={() => setActiveIndex(idx)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+
+  );
+}
+
+
 // ---------------- PROJECTS SECTION ----------------
 const projects = [
   {
@@ -1066,6 +1235,8 @@ export default function HomePage() {
 
       {/* NEW SELECTED PROJECTS SECTION */}
       <SelectedProjectsSection />
+
+      <ServicesSection />
     </>
   );
 }
