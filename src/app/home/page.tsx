@@ -723,13 +723,14 @@ const services = [
       "https://mattermost.com/wp-content/uploads/2022/08/10_Deploy_React_Kubernetes_Docker@2x.webp",
   },
 ];
-
 function ServicesSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [servicesTitleVisible, setServicesTitleVisible] = useState(false);
+  const starCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // GSAP scroll + rotation
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -755,7 +756,7 @@ function ServicesSection() {
           duration: 1.5,
           ease: "power2.inOut",
         },
-        ">",
+        ">"
       );
     }, sectionRef);
 
@@ -766,7 +767,7 @@ function ServicesSection() {
   useEffect(() => {
     const id = setInterval(
       () => setActiveIndex((prev) => (prev + 1) % services.length),
-      2600,
+      2600
     );
     return () => clearInterval(id);
   }, []);
@@ -782,19 +783,117 @@ function ServicesSection() {
           setServicesTitleVisible(entry.isIntersecting);
         });
       },
-      { threshold: 0.4 },
+      { threshold: 0.4 }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  // starfield canvas effect
+  useEffect(() => {
+    const canvas = starCanvasRef.current;
+    const section = sectionRef.current;
+    if (!canvas || !section) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = section.clientWidth;
+    let height = section.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.scale(dpr, dpr);
+
+    const STAR_COUNT = 80;
+    const stars = Array.from({ length: STAR_COUNT }).map(() => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 1.7 + 0.6,
+      alpha: Math.random() * 0.6 + 0.3,
+      alphaDir: Math.random() > 0.5 ? 1 : -1,
+      vx: (Math.random() - 0.5) * 0.03,
+      vy: (Math.random() - 0.5) * 0.03,
+    }));
+
+    let animationFrameId: number;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.fillStyle = "#ffffff";
+      for (const star of stars) {
+        // update flicker
+        star.alpha += star.alphaDir * 0.01;
+        if (star.alpha <= 0.3) {
+          star.alpha = 0.3;
+          star.alphaDir = 1;
+        } else if (star.alpha >= 0.9) {
+          star.alpha = 0.9;
+          star.alphaDir = -1;
+        }
+
+        // slight drift
+        star.x += star.vx;
+        star.y += star.vy;
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
+        if (star.y < 0) star.y = height;
+        if (star.y > height) star.y = 0;
+
+        ctx.globalAlpha = star.alpha;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    const handleResize = () => {
+      width = section.clientWidth;
+      height = section.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const activeService = services[activeIndex];
 
   return (
     <section ref={sectionRef} className="services-section">
-      {/* star background layer */}
-      <div className="services-stars" />
+      {/* star canvas background */}
+      <canvas
+        ref={starCanvasRef}
+        className="services-stars-canvas"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* optional extra static star layer if you still want it */}
+      {/* <div className="services-stars" /> */}
 
       <div className="services-inner">
         {/* heading like ABOUT ME */}
@@ -851,9 +950,9 @@ function ServicesSection() {
         </div>
       </div>
     </section>
-
   );
 }
+
 
 
 // ---------------- PROJECTS SECTION ----------------

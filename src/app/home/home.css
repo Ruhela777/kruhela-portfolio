@@ -1425,15 +1425,13 @@ body.dark-mode .tech-stack-sub-icon {
   .tech-stack-sub-label {
     font-size: 0.55rem; /* Reduced from 0.6rem */
   }
-}
-
-/* =========================
+}/* =========================
    SELECTED PROJECTS SECTION
    ========================= */
 
 .selected-projects-section {
   position: relative;
-  min-height: 110vh;
+  min-height: 130vh;
   width: 100%;
   display: flex;
   align-items: stretch;
@@ -1442,27 +1440,60 @@ body.dark-mode .tech-stack-sub-icon {
   color: #ffffff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "SF Pro Display", sans-serif;
+  /* smooth vertical blending with neighbor sections */
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(3, 7, 18, 0.0) 0%,
+      rgba(3, 7, 18, 0.85) 14%,
+      rgba(3, 7, 18, 0.95) 50%,
+      rgba(3, 7, 18, 0.9) 86%,
+      rgba(3, 7, 18, 0.0) 100%
+    );
 }
-
 
 /* MORE BLUE WITH LIGHT GLOW + TEAL */
 .selected-bg {
   position: absolute;
   inset: 0;
   background:
-    /* soft light-blue glow across middle */
     radial-gradient(circle at center, rgba(144, 195, 255, 0.82) 0%, transparent 55%),
-    /* teal blue band using #14a9ca */
     radial-gradient(circle at 40% 55%, rgba(20, 169, 202, 0.9) 0%, transparent 60%),
-    /* top blue */
     radial-gradient(circle at top center, #5c93eb 0%, #325da3 38%, transparent 78%),
-    /* bottom darker blue/black */
     radial-gradient(circle at bottom center, #182a52 0%, #050813 88%);
-  /* first two lighten, last two deepen */
   background-blend-mode: screen, screen, multiply, multiply;
   z-index: 0;
 }
 
+/* top & bottom soft fades so it melts into surrounding sections */
+.selected-projects-section::before,
+.selected-projects-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.selected-projects-section::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(3, 7, 18, 1) 0%,
+    rgba(3, 7, 18, 0.0) 100%
+  );
+}
+
+.selected-projects-section::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(3, 7, 18, 1) 0%,
+    rgba(3, 7, 18, 0.0) 100%
+  );
+}
 
 /* silhouette image, enlarged and very dark */
 .selected-photo-wrapper {
@@ -1471,9 +1502,10 @@ body.dark-mode .tech-stack-sub-icon {
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: center; /* center baseline */
+  justify-content: center;
   pointer-events: none;
   overflow: hidden;
+  margin-top: 50px;
 }
 
 .selected-photo {
@@ -1481,14 +1513,11 @@ body.dark-mode .tech-stack-sub-icon {
   height: 130vh;
   max-height: none;
   object-fit: cover;
-
-  /* softer, brighter so face reads more */
   filter: grayscale(100%)
-          blur(1.5px)        /* was 3px */
-          contrast(1.05)     /* slightly softer contrast */
-          brightness(0.22);  /* was 0.13 */
+          blur(1.5px)
+          contrast(1.05)
+          brightness(0.22);
   opacity: 0.96;
-
   transform: translateX(-6vw);
 }
 
@@ -1500,14 +1529,15 @@ body.dark-mode .tech-stack-sub-icon {
     radial-gradient(circle at center, rgba(10, 24, 60, 0.7) 0%, transparent 55%),
     linear-gradient(
       to right,
-      rgba(2, 6, 23, 0.9) 0%,
-      rgba(10, 28, 70, 0.45) 35%,
-      rgba(2, 6, 23, 0.9) 100%
+      rgba(2, 6, 23, 0.96) 0%,
+      rgba(10, 28, 70, 0.55) 40%,
+      rgba(2, 6, 23, 0.96) 100%
     );
   mix-blend-mode: multiply;
   pointer-events: none;
 }
 
+/* LEFT COLUMN */
 
 .selected-left {
   position: relative;
@@ -1516,10 +1546,9 @@ body.dark-mode .tech-stack-sub-icon {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 3rem 3rem 2.5rem 3rem;
-  margin-bottom: 30px;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  margin-bottom: 24px;
 }
-
 
 .selected-text-block {
   max-width: 640px;
@@ -1529,31 +1558,33 @@ body.dark-mode .tech-stack-sub-icon {
   font-weight: 800;
   letter-spacing: 0.08em;
   line-height: 0.9;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.1rem;
   text-transform: uppercase;
 }
 
-.selected-heading-main{
+.selected-heading-main {
   display: block;
-  font-size: clamp(2.6rem, 4vw, 3.8rem);
+  font-size: clamp(2.1rem, 3.2vw, 3.1rem);
   font-family: "Tomorrow", sans-serif;
 }
 
 .selected-description {
-  font-size: 1.3rem;
-  line-height: 1.7;
-  max-width: 520px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 400px;
   color: rgba(236, 242, 255, 0.9);
   font-family: "Electrolize", sans-serif;
+  text-align: justify;
 }
 
 /* RIGHT preview image inside main card */
+
 .selected-main-image-wrapper {
   width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   background: #05070d;
 }
 
@@ -1565,17 +1596,18 @@ body.dark-mode .tech-stack-sub-icon {
 }
 
 /* horizontal scroller at bottom-right */
+
 .selected-scroller-wrapper {
   width: 100%;
   max-width: 560px;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
 
 .selected-scroller {
   display: flex;
-  gap: 1rem;
+  gap: 0.9rem;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
   scrollbar-width: thin;
   scroll-behavior: smooth;
 }
@@ -1592,6 +1624,7 @@ body.dark-mode .tech-stack-sub-icon {
 }
 
 /* each item in the strip */
+
 .selected-scroll-item {
   flex: 0 0 auto;
   border: none;
@@ -1600,14 +1633,14 @@ body.dark-mode .tech-stack-sub-icon {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   align-items: flex-start;
   color: inherit;
 }
 
 .selected-scroll-thumb {
-  width: 170px;
-  max-width: 45vw;
+  width: 150px;
+  max-width: 42vw;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 4px;
@@ -1625,7 +1658,7 @@ body.dark-mode .tech-stack-sub-icon {
 }
 
 .selected-scroll-name {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(241, 245, 255, 0.9);
@@ -1637,25 +1670,25 @@ body.dark-mode .tech-stack-sub-icon {
   border-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7);
 }
+
 /* RIGHT SIDE: preview + scroller */
+
 .selected-right {
   position: relative;
-  z-index: 3;              /* above photo-wrapper (z=1) and overlay */
-  flex: 0 0 50%;           /* take right half of the section */
+  z-index: 3;
+  flex: 0 0 50%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
-  padding: 3rem 3rem 2rem 1.5rem; /* adjust as you like */
-  gap: 1.25rem;
-  margin-bottom: 30px;
+  padding: 2.5rem 2.5rem 1.75rem 1.25rem;
+  gap: 1rem;
+  margin-bottom: 40px;
 }
 
-/* big preview card container (already used in TSX but missing in CSS) */
-/* base preview (hidden state) */
 .selected-main-preview {
   width: 100%;
-  max-width: 620px;
+  max-width: 580px;
   aspect-ratio: 16 / 9;
   background-color: #030303;
   border-radius: 4px;
@@ -1665,50 +1698,43 @@ body.dark-mode .tech-stack-sub-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-
   opacity: 0;
   transform: translateY(12px) scale(0.96);
   transition: opacity 0.3s ease-out,
               transform 0.3s ease-out;
 }
 
-/* when visible on hover */
 .selected-main-preview-visible {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-
 .selected-scroller {
   display: flex;
-  gap: 1rem;
+  gap: 0.9rem;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
   scroll-behavior: smooth;
-
-  /* hide scrollbars but allow scrolling */
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none;    /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .selected-scroller::-webkit-scrollbar {
-  display: none;            /* Chrome/Safari/Opera */
+  display: none;
 }
+
 .selected-circles-overlay {
   position: absolute;
   inset: 0;
   z-index: 0.5;
   pointer-events: none;
-
   background-image:
-    /* softer, more transparent vignette */
     radial-gradient(
       circle at 55% 50%,
       transparent 0%,
       transparent 70%,
       rgba(0, 8, 25, 0.4) 100%
     ),
-    /* diffused, lower-contrast rings */
     repeating-radial-gradient(
       circle at 55% 50%,
       rgba(20, 169, 202, 0.22) 0px,
@@ -1716,10 +1742,10 @@ body.dark-mode .tech-stack-sub-icon {
       transparent 24px,
       transparent 48px
     );
-
-  opacity: 0.45;           /* slightly lower so it melts into the bg */
+  opacity: 0.45;
   mix-blend-mode: screen;
 }
+
 .selected-scroll-item-link {
   text-decoration: none;
   color: inherit;
@@ -1732,66 +1758,33 @@ body.dark-mode .tech-stack-sub-icon {
 
 .services-section {
   position: relative;
-  min-height: 100vh;
+  min-height: 110vh;           /* was 100vh */
   width: 100%;
   overflow: hidden;
   color: #f9fafb;
   background: radial-gradient(circle at center, #050816 0%, #020617 55%, #000 100%);
-  margin-top: 100px;
+  margin-top: 30px;
 }
 
 .services-inner {
-  z-index : 1;
   position: relative;
   width: 100%;
   height: 100vh;
-  /* push grid content further down */
-  padding: 12rem clamp(2rem, 6vw, 5rem) 4rem;
+  padding: 10rem clamp(1.75rem, 5vw, 4rem) 3.5rem; /* slightly tighter */
   display: grid;
   grid-template-columns: 1.1fr 1fr 1.1fr;
   align-items: center;
 }
 
-.services-stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    radial-gradient(2px 2px at 12% 18%, rgba(255, 255, 255, 0.8) 0, transparent 55%),
-    radial-gradient(1.5px 1.5px at 82% 26%, rgba(255, 255, 255, 0.6) 0, transparent 55%),
-    radial-gradient(1.7px 1.7px at 30% 68%, rgba(255, 255, 255, 0.55) 0, transparent 60%),
-    radial-gradient(1.4px 1.4px at 64% 82%, rgba(255, 255, 255, 0.5) 0, transparent 55%),
-    radial-gradient(1.3px 1.3px at 50% 40%, rgba(255, 255, 255, 0.65) 0, transparent 60%);
-  opacity: 0.6;
-  animation: servicesStarsTwinkle 7s ease-in-out infinite alternate;
-}
-
-/* soft twinkle animation */
-@keyframes servicesStarsTwinkle {
-  0% {
-    opacity: 0.3;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translate3d(4px, -6px, 0) scale(1.02);
-  }
-  100% {
-    opacity: 0.4;
-    transform: translate3d(-4px, 4px, 0) scale(1.01);
-  }
-}
 /* SERVICES heading same style as ABOUT ME */
 
 .services-title {
   position: absolute;
-  /* move heading closer to very top */
   top: -1rem;
   left: 50%;
   transform: translateX(-50%);
   font-family: "Anton", Impact, "Arial Narrow", Arial, sans-serif;
-  font-size: 170px;
+  font-size: 130px;                 /* was 170px */
   letter-spacing: 0.08em;
   text-transform: uppercase;
   display: inline-flex;
@@ -1841,11 +1834,11 @@ body.dark-mode .tech-stack-sub-icon {
 
 .services-description {
   max-width: 520px;
-  font-size: 1.3rem;
+  font-size: 1.05rem;             /* was 1.3rem */
   line-height: 1.7;
   color: rgba(226, 232, 240, 0.9);
   font-family: "Electrolize", sans-serif;
-  margin-bottom: 150px;
+  margin-bottom: 120px;           /* slightly less spacing */
   text-align: justify;
 }
 
@@ -1859,20 +1852,20 @@ body.dark-mode .tech-stack-sub-icon {
 
 .services-pie-wrapper {
   position: relative;
-  width: clamp(220px, 24vw, 320px);
+  width: clamp(200px, 22vw, 290px);  /* slightly smaller */
   aspect-ratio: 1 / 1;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  overflow: hidden; /* clip to circle */
+  overflow: hidden;
 }
 
 .services-pie {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* crop to fill circle */
-  border-radius: 50%; /* ensure circle */
+  object-fit: cover;
+  border-radius: 50%;
   filter:
     saturate(1.05)
     brightness(1.1)
@@ -1880,7 +1873,6 @@ body.dark-mode .tech-stack-sub-icon {
   transition: transform 0.7s ease-out, filter 0.4s ease-out;
 }
 
-/* optional: a slight hover emphasis when active */
 .services-center:hover .services-pie {
   transform: translateY(-4px) scale(1.02);
   filter:
@@ -1911,18 +1903,19 @@ body.dark-mode .tech-stack-sub-icon {
 }
 
 .services-main-title {
-  font-size: 2.5rem;
+  font-size: 1.9rem;               /* was 2.5rem */
   font-weight: 1000;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-family: "Orbitron", sans-serif;
+  margin-left: 50px;
 }
 
 /* dots below for manual switch */
 
 .services-dots {
   position: absolute;
-  bottom: 2.5rem;
+  bottom: 2.2rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1930,8 +1923,8 @@ body.dark-mode .tech-stack-sub-icon {
 }
 
 .services-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   border: none;
   background: rgba(148, 163, 184, 0.6);
@@ -1940,7 +1933,7 @@ body.dark-mode .tech-stack-sub-icon {
 }
 
 .services-dot-active {
-  width: 18px;
+  width: 16px;
   background: #38bdf8;
   transform: scale(1.05);
 }
@@ -1951,16 +1944,16 @@ body.dark-mode .tech-stack-sub-icon {
   .services-inner {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
-    row-gap: 2.5rem;
-    padding-inline: 1.5rem;
-    height: auto; /* allow full content on small screens */
-     padding-top: 9rem;
-    padding-bottom: 4rem;
+    row-gap: 2.2rem;
+    padding-inline: 1.3rem;
+    height: auto;
+    padding-top: 8.2rem;
+    padding-bottom: 3.5rem;
   }
 
   .services-title {
     top: -0.5rem;
-    font-size: 110px;
+    font-size: 90px;             /* smaller mobile */
   }
 
   .services-left {
@@ -1982,6 +1975,13 @@ body.dark-mode .tech-stack-sub-icon {
 
   .services-description {
     margin-inline: auto;
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem;
+    font-size: 0.98rem;          /* smaller mobile */
   }
+}
+.services-stars-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
