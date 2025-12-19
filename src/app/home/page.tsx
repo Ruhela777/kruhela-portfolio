@@ -697,15 +697,68 @@ export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
   const [journeyTitleVisible, setJourneyTitleVisible] = useState(false);
 
   const projects = [
-    { id: 1, title: "Techivation", role: "Full Stack Developer", period: "May 2025 – Present", description: "Building and maintaining the full web and SaaS ecosystem powering audio plugin licensing and management." },
-    { id: 2, title: "GreenPrompt", role: "AI‑Powered Product", period: "2024 – 2025", description: "AI‑driven content assistant focused on sustainability‑first prompts and workflows." },
-    { id: 3, title: "DreamPartner", role: "Full Stack Developer", period: "2024", description: "Matchmaking platform with modern UX and secure backend architecture." },
-    { id: 4, title: "KASKA", role: "Frontend Engineer", period: "2024", description: "Conversion‑focused e‑commerce UI with responsive layouts and smooth transitions." },
-    { id: 5, title: "Spotify Clone", role: "Personal Project", period: "2023", description: "Streaming UI with playlists, player controls, and real‑time interactions." },
-    { id: 6, title: "Portfolio Evolution", role: "Designer & Developer", period: "Ongoing", description: "Iterating on this portfolio experience with motion, storytelling, and performance." },
+    {
+      id: 1,
+      title: "Green Prompt",
+      role: "Full Stack Developer",
+      period: "October 2025 – Present",
+      description:
+        "“Grammarly for AI Prompts” GreenPrompt is an AI-powered prompt optimization platform designed to reduce token wastage, lower costs, and minimize environmental impact. It improves prompt quality in real time, delivers more efficient AI responses, and provides analytics that quantify cost savings and CO₂ reduction, helping users and organizations use AI smarter and greener.",
+    },
+    {
+      id: 2,
+      title: "MUCK",
+      role: "Frontend & Backend Developer",
+      period: "November – Present",
+      description:
+        "“Real-Time CRDT Collaborative Editor” MUCK is a real-time collaborative document editor that enables multiple users to edit the same document simultaneously with conflict-free synchronization. Built using CRDTs (Yjs) and WebSockets, it ensures seamless live updates, cursor presence, offline editing support, and eventual consistency across users, all within a secure, scalable web architecture.",
+    },
+    {
+      id: 3,
+      title: "Dream Partner",
+      role: "Full-Stack Product Developer",
+      period: "August 2025 – December 2025",
+      description:
+        "“Game-Based Compatibility Platform” DreamPartner is a game-driven matchmaking experience that replaces swipes with meaningful interaction. Through a 2.5D escape-room game, two users play together while their in-game decisions are analyzed using psychological and behavioral mapping to assess compatibility, uncover personality traits, and build authentic connections—before any awkward introductions.",
+    },
+    {
+      id: 4,
+      title: "HealSphere",
+      role: "Full-Stack Developer & AI Engineer",
+      period: "May 2025 – July 2025",
+      description:
+        "“AI-Powered Healthcare Companion” HealSphere is an AI-driven mobile and web platform designed to detect early signs of mental and physical health issues. By analyzing speech patterns, typing behavior, and device usage, it enables proactive health monitoring, voice-based symptom reporting, AI-assisted urgency assessment, and seamless doctor consultations with prescription and follow-up management—making healthcare more accessible for both urban and rural users.",
+    },
+    {
+      id: 5,
+      title: "KASKA",
+      role: "Frontend Developer & Backend Integrator",
+      period: "January 2025 - April 2025",
+      description:
+        "“AI-Powered Smart Notes & Document Management Platform” KASKA is an AI-driven platform designed to digitize, organize, and manage handwritten notes, printed documents, and diagrams. Using advanced OCR, diagram recognition, and AI-powered content organization, it enables seamless cross-platform access, real-time cloud sync, and integration with popular productivity tools—creating a smarter, paperless workflow for students and professionals.",
+    },
+    {
+      id: 6,
+      title: "Spotify Clone",
+      role: "Full Stack Developer",
+      period: "October 2024 – December 2024",
+      description:
+        "“Full-Stack Music Streaming Web App (React)” A fully functional Spotify-inspired music streaming application built using React, featuring a modern UI, smooth playback experience, dynamic content rendering, and seamless backend integration. The app delivers real-time interactions, responsive design, and an intuitive user experience similar to a production-grade streaming platform.",
+    },
   ];
 
-  // --- High-Density Starfield Engine ---
+  const parseDescription = (text: string) => {
+    // Extract text between first pair of “ ”
+    const match = text.match(/“([^”]+)”(.*)/);
+    if (!match) {
+      return { subtitle: "", body: text };
+    }
+    const subtitle = match[1].trim();
+    const body = match[2].trim();
+    return { subtitle, body };
+  };
+
+  // --- Neuron Network Background Engine (white, bright, random spawning) ---
   useEffect(() => {
     const canvas = starCanvasRef.current;
     const section = sectionRef.current;
@@ -715,27 +768,48 @@ export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let stars: any[] = [];
-    const STAR_COUNT = 800;
 
-    const initStars = (width: number, height: number) => {
-      stars = [];
-      for (let i = 0; i < STAR_COUNT; i++) {
-        stars.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          r: Math.random() * 1.3 + 0.2,
-          alpha: Math.random(),
-          alphaDir: Math.random() > 0.5 ? 1 : -1,
-          speed: Math.random() * 0.005 + 0.002,
-          vx: (Math.random() - 0.5) * 0.03,
-          vy: (Math.random() - 0.5) * 0.03,
-        });
+    type Particle = {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      life: number;
+      maxLife: number;
+    };
+
+    let particles: Particle[] = [];
+
+    const MAX_PARTICLES = 130;
+    const MAX_DISTANCE = 170;
+    const dpr = window.devicePixelRatio || 1;
+
+    const mouse = { x: 0, y: 0, active: false };
+
+    const randomInRange = (min: number, max: number) =>
+      Math.random() * (max - min) + min;
+
+    const createParticle = (width: number, height: number): Particle => {
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: randomInRange(-0.35, 0.35),
+        vy: randomInRange(-0.35, 0.35),
+        radius: Math.random() * 1.8 + 1.2,
+        life: 0,
+        maxLife: randomInRange(5, 12),
+      };
+    };
+
+    const initParticles = (width: number, height: number) => {
+      particles = [];
+      for (let i = 0; i < MAX_PARTICLES; i++) {
+        particles.push(createParticle(width, height));
       }
     };
 
-    const updateCanvasSize = () => {
-      const dpr = window.devicePixelRatio || 1;
+    const resize = () => {
       const width = section.offsetWidth;
       const height = section.offsetHeight;
 
@@ -743,74 +817,170 @@ export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
-      initStars(width, height);
+
+      initParticles(width, height);
     };
 
-    const render = () => {
-      const width = canvas.width / (window.devicePixelRatio || 1);
-      const height = canvas.height / (window.devicePixelRatio || 1);
-      
+    let lastTime = performance.now();
+
+    const draw = () => {
+      const now = performance.now();
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+
+      const width = canvas.width / dpr;
+      const height = canvas.height / dpr;
+
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = darkMode ? "#ffffff" : "#000000";
 
-      for (const star of stars) {
-        star.alpha += star.alphaDir * star.speed;
-        if (star.alpha <= 0.1 || star.alpha >= 0.9) star.alphaDir *= -1;
+      const nodeColor = "#ffffff";
+      const lineBase = "rgba(255, 255, 255, ";
+      const glowColor = "rgba(255, 255, 255, 0.95)";
 
-        star.x += star.vx;
-        star.y += star.vy;
-        if (star.x < 0) star.x = width;
-        if (star.x > width) star.x = 0;
-        if (star.y < 0) star.y = height;
-        if (star.y > height) star.y = 0;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
 
-        ctx.globalAlpha = star.alpha;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life += delta;
+
+        if (p.x < -60) p.x = width + 60;
+        if (p.x > width + 60) p.x = -60;
+        if (p.y < -60) p.y = height + 60;
+        if (p.y > height + 60) p.y = -60;
+
+        if (p.life > p.maxLife) {
+          particles[i] = createParticle(width, height);
+        }
+      }
+
+      ctx.lineWidth = 1.1;
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        const lifeRatio1 = p1.life / p1.maxLife;
+        const lifeAlpha1 =
+          lifeRatio1 < 0.5 ? lifeRatio1 * 2 : (1 - lifeRatio1) * 2;
+
+        if (mouse.active) {
+          const dxm = p1.x - mouse.x;
+          const dym = p1.y - mouse.y;
+          const distMouse = Math.sqrt(dxm * dxm + dym * dym);
+          if (distMouse < MAX_DISTANCE) {
+            const alpha = (1 - distMouse / MAX_DISTANCE) * lifeAlpha1;
+            ctx.strokeStyle = `${lineBase}${0.4 * alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < MAX_DISTANCE) {
+            const lifeRatio2 = p2.life / p2.maxLife;
+            const lifeAlpha2 =
+              lifeRatio2 < 0.5 ? lifeRatio2 * 2 : (1 - lifeRatio2) * 2;
+            const lifeAlpha = (lifeAlpha1 + lifeAlpha2) / 2;
+
+            const distAlpha = 1 - dist / MAX_DISTANCE;
+            const alpha = distAlpha * lifeAlpha;
+            ctx.strokeStyle = `${lineBase}${0.15 + 0.35 * alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (const p of particles) {
+        const lifeRatio = p.life / p.maxLife;
+        const lifeAlpha =
+          lifeRatio < 0.5 ? lifeRatio * 2 : (1 - lifeRatio) * 2;
+
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = nodeColor;
+        ctx.globalAlpha = 0.6 + 0.4 * lifeAlpha;
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 14 + 10 * lifeAlpha;
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
       }
-      animationFrameId = requestAnimationFrame(render);
+
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+
+      animationFrameId = requestAnimationFrame(draw);
     };
 
-    updateCanvasSize();
-    render();
+    resize();
+    lastTime = performance.now();
+    draw();
 
-    window.addEventListener("resize", updateCanvasSize);
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      mouse.active = true;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.active = false;
+    };
+
+    window.addEventListener("resize", resize);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", updateCanvasSize);
+      window.removeEventListener("resize", resize);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [darkMode]);
 
-  // --- Title Reveal Observer (Toggle visibility on scroll up/down) ---
+  // --- Title Reveal Observer ---
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      setJourneyTitleVisible(entry.isIntersecting);
-    }, { threshold: 0.1 });
-    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setJourneyTitleVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
     if (titleRef.current) observer.observe(titleRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // --- Sequential Items Reveal (Modified to toggle classes for scroll-up) ---
+  // --- Sequential Items Reveal ---
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("reveal-active");
-        } else {
-          // Removes class when scrolling away
-          entry.target.classList.remove("reveal-active");
-        }
-      });
-    }, { 
-      threshold: 0.1,
-      rootMargin: "0px 0px -50px 0px" // Slight offset for better visual feel
-    });
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("reveal-active");
+          } else {
+            entry.target.classList.remove("reveal-active");
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
 
     const items = document.querySelectorAll(".my-journey-item");
-    items.forEach((item) => observer.observe(item));
+    items.forEach(item => observer.observe(item));
     return () => observer.disconnect();
   }, []);
 
@@ -822,7 +992,10 @@ export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
       const windowH = window.innerHeight;
       const progress = (windowH * 0.7 - rect.top) / rect.height;
       const clamped = Math.max(0, Math.min(1, progress));
-      lineRef.current.style.setProperty("--journey-line-progress", `${clamped * 100}%`);
+      lineRef.current.style.setProperty(
+        "--journey-line-progress",
+        `${clamped * 100}%`
+      );
     };
     window.addEventListener("scroll", updateLine);
     return () => window.removeEventListener("scroll", updateLine);
@@ -833,7 +1006,10 @@ export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
       <canvas ref={starCanvasRef} className="journey-stars-canvas" />
 
       <div className="my-journey-inner">
-        <h2 ref={titleRef} className={`my-journey-title ${journeyTitleVisible ? "reveal" : ""}`}>
+        <h2
+          ref={titleRef}
+          className={`my-journey-title ${journeyTitleVisible ? "reveal" : ""}`}
+        >
           {"MY JOURNEY".split("").map((char, i) => (
             <span key={i} style={{ transitionDelay: `${i * 0.08}s` }}>
               {char === " " ? "\u00A0" : char}
@@ -848,23 +1024,49 @@ export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
           </div>
 
           <div className="my-journey-items">
-            {projects.map((project, index) => (
-              <div key={project.id} className={`my-journey-item ${index % 2 === 0 ? "left" : "right"}`}>
-                <div className="my-journey-card">
-                  <div className="my-journey-dot" />
-                  <h3 className="my-journey-project-title">{project.title}</h3>
-                  <p className="my-journey-project-role">{project.role}</p>
-                  <p className="my-journey-project-description">{project.description}</p>
-                  <p className="my-journey-project-period">{project.period}</p>
+            {projects.map((project, index) => {
+              const { subtitle, body } = parseDescription(
+                project.description
+              );
+              return (
+                <div
+                  key={project.id}
+                  className={`my-journey-item ${
+                    index % 2 === 0 ? "left" : "right"
+                  }`}
+                >
+                  <div className="my-journey-card">
+                    <div className="my-journey-dot" />
+                    <h3 className="my-journey-project-title">
+                      {project.title}
+                    </h3>
+                    <p className="my-journey-project-role">
+                      {project.role}
+                    </p>
+                    {subtitle && (
+                      <p className="my-journey-project-subtitle">
+                        {subtitle}
+                      </p>
+                    )}
+                    <p className="my-journey-project-description">
+                      {body}
+                    </p>
+                    <p className="my-journey-project-period">
+                      {project.period}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+
+
 // ---------------- SERVICES SECTION ----------------
 
 const services = [

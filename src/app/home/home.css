@@ -1986,6 +1986,9 @@ body.dark-mode .tech-stack-sub-icon {
   pointer-events: none;
 }
 
+/* =========================
+   MY JOURNEY SECTION
+   ========================= */
 .my-journey-section {
   position: relative;
   min-height: 140vh;
@@ -2127,11 +2130,42 @@ body.dark-mode .tech-stack-sub-icon {
 .my-journey-project-title { font-family: "Anton", sans-serif; font-size: 2rem; margin-bottom: 0.3rem; }
 .my-journey-project-role { font-family: "Orbitron", sans-serif; color: #14a9ca; font-weight: 600; font-size: 1rem; margin-bottom: 0.8rem; }
 .my-journey-project-description { font-family: "Electrolize", sans-serif; font-size: 0.95rem; opacity: 0.85; line-height: 1.6; }
-.my-journey-project-period { display: block; margin-top: 1rem; font-size: 0.8rem; opacity: 0.4; }
+.my-journey-project-period { display: block; margin-top: 2rem; font-size: 1rem; opacity: 0.4; }
 
 @media (max-width: 768px) {
   .my-journey-line-wrapper { left: 20px; transform: none; }
   .my-journey-item { width: 100%; padding-left: 3rem !important; padding-right: 0 !important; text-align: left !important; }
   .my-journey-dot { left: -9px !important; }
   .my-journey-title { font-size: 3.5rem; }
+}
+
+.my-journey-project-title {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.my-journey-project-role {
+  font-family: "Orbitron", sans-serif;
+  color: #14a9ca;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* NEW: subtitle from the quoted part */
+.my-journey-project-subtitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #e5e7eb;
+  margin-bottom: 0.7rem;
+}
+
+.my-journey-project-description {
+  font-family: "Electrolize", sans-serif;
+  font-size: 1rem;
+  opacity: 0.85;
+  line-height: 1.6;
 }
