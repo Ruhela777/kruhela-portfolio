@@ -688,6 +688,105 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   );
 }
 
+// ---------------- FOOTER ----------------
+
+function Footer() {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer
+      id="contact"
+      className="footer-section"
+    >
+      {/* Huge background name */}
+      <div
+        aria-hidden="true"
+        className="footer-name-background"
+      >
+        KRITIKA
+      </div>
+
+      <div className="footer-inner">
+        <h2 className="footer-heading">
+          <span>GET IN</span> <span className="footer-heading-accent">TOUCH</span>
+        </h2>
+
+        <div className="footer-columns">
+          {/* Column 1 */}
+          <div className="footer-col">
+  <p className="footer-text">
+    Got an idea that&apos;s waiting to come alive? Let&apos;s build it together.
+    Whether you&apos;re a designer, developer, or a creative studio, I&apos;d love
+    to collaborate and turn your thoughts into something real.
+  </p>
+  <a
+    href="mailto:ruhela.kritika777@gmail.com?subject=Collaboration%20opportunity"
+    className="footer-btn"
+  >
+    LET&apos;S COLLABORATE
+  </a>
+</div>
+
+<div className="footer-col">
+  <p className="footer-text">
+    If you&apos;re a digital agency or company looking for a designer–developer
+    who cares about details, motion and meaningful design, I&apos;m always open
+    to exciting opportunities.
+  </p>
+  <a
+    href="mailto:ruhela.kritika777@gmail.com?subject=Hire%20inquiry"
+    className="footer-btn"
+  >
+    HIRE ME
+  </a>
+</div>
+
+
+
+          {/* Column 3 */}
+          <div className="footer-col">
+            <p className="footer-text">
+              You can reach me through any of my socials below or drop me a message.
+              I&apos;d be happy to connect, collaborate, or just chat about new ideas.
+            </p>
+            <div className="footer-socials">
+              <a href="https://www.linkedin.com/in/ruhela-kritika/" target="_blank" rel="noreferrer">
+                LINKEDIN
+              </a>
+              <a href="https://github.com/kruhela777" target="_blank" rel="noreferrer">
+                GITHUB
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noreferrer">
+                INSTAGRAM
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom row: nav + name */}
+        <div className="footer-bottom">
+          <nav className="footer-nav">
+            <a href="#home">HOME</a>
+            <a href="#about-me">ABOUT ME</a>
+            <a href="#services">SERVICES</a>
+            <a href="#projects-work">PROJECTS</a>
+          </nav>
+
+          <div className="footer-signoff">
+            <p className="footer-name-line">
+              KRITIKA <span>RUHELA</span>
+            </p>
+            <p className="footer-year">
+              © {year} All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
 export function MyJourneySection({ darkMode }: { darkMode: boolean }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const layoutRef = useRef<HTMLDivElement | null>(null);
@@ -1275,7 +1374,7 @@ function ServicesSection() {
       {/* optional extra static star layer if you still want it */}
       {/* <div className="services-stars" /> */}
 
-      <div className="services-inner">
+      <div className="services-inner" id="services">
         {/* heading like ABOUT ME */}
         <h2
           ref={titleRef}
@@ -1338,22 +1437,22 @@ function ServicesSection() {
 // ---------------- PROJECTS SECTION ----------------
 const projects = [
   {
-    id: "GreenPrompt",
+    id: "greenprompt", // lowercase to match folder name
     name: "GreenPrompt",
     thumbnail: "/projects/greenprompt-thumb.png",
   },
   {
-    id: "DreamPartner",
+    id: "dreampartner",
     name: "DreamPartner",
     thumbnail: "/projects/dreampartner-thumb.png",
   },
   {
-    id: "KASKA",
+    id: "kaska",
     name: "KASKA",
     thumbnail: "/projects/KASKA-thumb.png",
   },
   {
-    id: "SpotifyClone",
+    id: "spotifyclone",
     name: "SpotifyClone",
     thumbnail: "/projects/spotifyclone-thumb.jpg",
   },
@@ -1380,10 +1479,8 @@ function SelectedProjectsSection() {
 
     const step = () => {
       if (!isUserHoveringStrip) {
-        // advance
         scroller.scrollLeft += speed;
 
-        // when we scrolled past one full set, jump back by that width
         if (scroller.scrollLeft >= halfWidth) {
           scroller.scrollLeft -= halfWidth;
         }
@@ -1395,18 +1492,17 @@ function SelectedProjectsSection() {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isUserHoveringStrip]);
 
-  // data duplicated so loop looks continuous
   const loopItems = [...projects, ...projects];
 
   return (
-    <section className="selected-projects-section">
+    <section className="selected-projects-section" id="projects-work">
       {/* blue background */}
       <div className="selected-bg" />
 
       {/* concentric circles overlay */}
       <div className="selected-circles-overlay" />
 
-      {/* your silhouette centered behind everything */}
+      {/* silhouette */}
       <div className="selected-photo-wrapper">
         <img
           src="/me-projects.png"
@@ -1443,21 +1539,18 @@ function SelectedProjectsSection() {
                   className="selected-main-image"
                 />
               </div>
-              <h3 className="selected-main-title">
-                {hoveredProject.name}
-              </h3>
+              <h3 className="selected-main-title">{hoveredProject.name}</h3>
             </div>
           </div>
         )}
 
-        {/* wrapper row to nudge scroller right */}
         <div
           className="selected-scroller-row"
           style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
         >
           <div
             className="selected-scroller-wrapper"
-            style={{ marginLeft: "2rem" }} // shift whole strip to the right
+            style={{ marginLeft: "2rem" }}
           >
             <div
               className="selected-scroller"
@@ -1468,7 +1561,7 @@ function SelectedProjectsSection() {
               {loopItems.map((project, index) => (
                 <Link
                   key={`${project.id}-${index}`}
-                  href={`/projects/${project.id.toLowerCase()}`}
+                  href={`/projects/${project.id}`} // id already lowercase
                   className="selected-scroll-item-link"
                 >
                   <button
@@ -1500,6 +1593,7 @@ function SelectedProjectsSection() {
 
 
 
+
 // ---------------- HOME PAGE ----------------
 
 export default function HomePage() {
@@ -1514,6 +1608,7 @@ export default function HomePage() {
   const techStackRef = useRef<HTMLHeadingElement | null>(null);
   const [techStackVisible, setTechStackVisible] = useState(false);
 
+  
   useEffect(() => {
     const el = aboutRef.current;
     if (!el) return;
@@ -1611,14 +1706,16 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="nav-img-center">
-          <a href="#" className="nav-img-link">
+        <div className="nav-img-center" id="home">
+          <a href="#about-me" className="nav-img-link">
             ABOUT <span className="nav-img-link-arrow">→</span>
           </a>
-          <a href="#" className="nav-img-link">
+
+          <a href="#projects-work" className="nav-img-link">
             WORK <span className="nav-img-link-arrow">→</span>
           </a>
-          <a href="#" className="nav-img-link">
+
+          <a href="#contact" className="nav-img-link">
             CONTACT <span className="nav-img-link-arrow">→</span>
           </a>
         </div>
@@ -1679,21 +1776,22 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="about-me-section">
-        <h2
-          ref={aboutRef}
-          className={`about-me-title ${aboutVisible ? "reveal" : ""}`}
-        >
-          <span>A</span>
-          <span>B</span>
-          <span>O</span>
-          <span>U</span>
-          <span>T</span>
-          <span>&nbsp;</span>
-          <span>M</span>
-          <span>E</span>
-        </h2>
-      </div>
+      <div className="about-me-section" id="about-me">
+  <h2
+    ref={aboutRef}
+    className={`about-me-title ${aboutVisible ? "reveal" : ""}`}
+  >
+    <span>A</span>
+    <span>B</span>
+    <span>O</span>
+    <span>U</span>
+    <span>T</span>
+    <span>&nbsp;</span>
+    <span>M</span>
+    <span>E</span>
+  </h2>
+</div>
+
 
       <StatementSection />
 
@@ -1727,6 +1825,8 @@ export default function HomePage() {
       <ServicesSection />
 
       <MyJourneySection darkMode={darkMode} />
+
+      <Footer/>
     </>
   );
 }
