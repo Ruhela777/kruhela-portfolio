@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
 
 :root {
   --bg-color: #050505;
@@ -64,7 +64,6 @@
   margin-bottom: 50px;
 }
 
-/* Image Card Styling */
 .hero-image-container {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -81,10 +80,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(45deg, #000, #111); /* Add your image here later */
+  background: linear-gradient(45deg, #000, #111); 
 }
 
-/* Right Side Content */
 .section-heading { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; margin-bottom: 15px; }
 .subheading { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--text-gray); }
 .body-text { line-height: 1.6; color: var(--text-gray); font-size: 1.1rem; }
@@ -94,7 +92,7 @@
 
 .greenprompt-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-/* Footer Styles */
+
 .footer-wrapper {
   padding: 100px 8% 20px 8%;
   background: linear-gradient(to top, rgba(0,0,0,1), transparent);
@@ -133,4 +131,4 @@
 @media (max-width: 900px) {
   .greenprompt-inner { flex-direction: column; padding-top: 60px; }
   .huge-name { font-size: 22vw; }
-}
+} 
