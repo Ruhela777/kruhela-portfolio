@@ -148,7 +148,7 @@ export default function GreenPromptPage() {
                 playsInline
                 poster="/greenprompt-poster.jpg"
               >
-                <source src="/videos/greenprompt-video.mp4" type="video/mp4" />
+                <source src="https://res.cloudinary.com/dztthidxb/video/upload/v1766933831/greenprompt-video_imuqco.mp4" type="video/mp4" />
               </video>
             </div>
           </section>

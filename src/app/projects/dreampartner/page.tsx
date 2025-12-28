@@ -195,7 +195,7 @@ export default function DreamPartnerPage() {
                 playsInline
                 poster="/dreampartner-poster.jpg"
               >
-                <source src="/videos/DREAMPARTNER.mp4" type="video/mp4" />
+                <source src="https://res.cloudinary.com/dztthidxb/video/upload/v1766933725/DREAMPARTNER_1_hvlhn9.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
