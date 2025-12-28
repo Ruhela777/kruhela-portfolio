@@ -22,6 +22,9 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   canvas.width = width;
   canvas.height = height;
 
+  let animationId: number;
+  let isRunning = true;
+
   const resize = () => {
     width = window.innerWidth * dpr;
     height = window.innerHeight * dpr;
@@ -29,8 +32,6 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
     canvas.height = height;
   };
   window.addEventListener("resize", resize);
-
-  let isRunning = true;  // ← ADD THIS
 
   const neurons = Array.from({ length: 80 }, () => ({
     x: Math.random() * width,
@@ -42,14 +43,52 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   }));
 
   function animate() {
-    if (!isRunning || !context || !canvas) return;  // ← ADD isRunning CHECK
-    // ... all your existing drawing code ...
-    requestAnimationFrame(animate);
+    if (!isRunning || !context || !canvas) return;
+    
+    context.clearRect(0, 0, width, height);
+
+    for (let i = 0; i < neurons.length; i++) {
+      const n1 = neurons[i];
+      for (let j = i + 1; j < neurons.length; j++) {
+        const n2 = neurons[j];
+        const dx = n1.x - n2.x;
+        const dy = n1.y - n2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 150 * dpr) {
+          context.beginPath();
+          context.strokeStyle = n1.color;
+          context.globalAlpha = (1 - dist / (150 * dpr)) * 0.2;
+          context.lineWidth = 0.8 * dpr;
+          context.moveTo(n1.x, n1.y);
+          context.lineTo(n2.x, n2.y);
+          context.stroke();
+        }
+      }
+
+      context.beginPath();
+      context.arc(n1.x, n1.y, n1.r * dpr, 0, Math.PI * 2);
+      context.fillStyle = n1.color;
+      context.globalAlpha = 0.9;
+      context.shadowBlur = 12;
+      context.shadowColor = n1.color;
+      context.fill();
+      context.shadowBlur = 0;
+
+      n1.x += n1.vx;
+      n1.y += n1.vy;
+      if (n1.x < 0 || n1.x > width) n1.vx *= -1;
+      if (n1.y < 0 || n1.y > height) n1.vy *= -1;
+    }
+
+    animationId = requestAnimationFrame(animate);
   }
 
   animate();
+
   return () => {
-    isRunning = false;  // ← STOP ANIMATION
+    isRunning = false;
+    if (animationId) cancelAnimationFrame(animationId);
     window.removeEventListener("resize", resize);
   };
 }, [darkMode]);
