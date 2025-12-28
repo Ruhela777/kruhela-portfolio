@@ -1,113 +1,121 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { FaGithub } from "react-icons/fa";
 import "./greenprompt.css";
 
-
-// --- Neuron Background (Enhanced with Glow and Mixed Colors) ---
+// --- FIXED Neuron Background (Bulletproof Cleanup) ---
 function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const mountedRef = useRef<boolean>(false);
 
   useEffect(() => {
-  const canvas = canvasRef.current;
-  if (!canvas) return;
-  const context = canvas.getContext("2d");
-  if (!context) return;
+    // Clear any existing RAF immediately
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
 
-  const dpr = window.devicePixelRatio || 1;
-  let width = window.innerWidth * dpr;
-  let height = window.innerHeight * dpr;
-  canvas.width = width;
-  canvas.height = height;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  let animationId: number | null = null;
-  let rafId: number | null = null;
+    const context = canvas.getContext("2d");
+    if (!context) return;
 
-  const resize = () => {
-    width = window.innerWidth * dpr;
-    height = window.innerHeight * dpr;
+    mountedRef.current = true;
+
+    const dpr = window.devicePixelRatio || 1;
+    let width = window.innerWidth * dpr;
+    let height = window.innerHeight * dpr;
     canvas.width = width;
     canvas.height = height;
-  };
-  window.addEventListener("resize", resize);
 
-  const neurons = Array.from({ length: 80 }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    vx: (Math.random() - 0.5) * 0.8,
-    vy: (Math.random() - 0.5) * 0.8,
-    r: Math.random() * 2 + 1,
-    color: Math.random() < 0.5 ? "#ffffff" : "#00ff88",
-  }));
+    const resizeHandler = () => {
+      if (!mountedRef.current) return;
+      width = window.innerWidth * dpr;
+      height = window.innerHeight * dpr;
+      canvas.width = width;
+      canvas.height = height;
+    };
 
-  function animate() {
-    if (!context || !canvas) return;
-    
-    context.clearRect(0, 0, width, height);
+    const resize = resizeHandler;
+    window.addEventListener("resize", resize);
 
-    for (let i = 0; i < neurons.length; i++) {
-      const n1 = neurons[i];
-      for (let j = i + 1; j < neurons.length; j++) {
-        const n2 = neurons[j];
-        const dx = n1.x - n2.x;
-        const dy = n1.y - n2.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+    const neurons = Array.from({ length: 80 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8,
+      r: Math.random() * 2 + 1,
+      color: Math.random() < 0.5 ? "#ffffff" : "#00ff88",
+    }));
 
-        if (dist < 150 * dpr) {
-          context.beginPath();
-          context.strokeStyle = n1.color;
-          context.globalAlpha = (1 - dist / (150 * dpr)) * 0.2;
-          context.lineWidth = 0.8 * dpr;
-          context.moveTo(n1.x, n1.y);
-          context.lineTo(n2.x, n2.y);
-          context.stroke();
+    function animate() {
+      if (!mountedRef.current || !context || !canvas) return;
+
+      context.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < neurons.length; i++) {
+        const n1 = neurons[i];
+
+        for (let j = i + 1; j < neurons.length; j++) {
+          const n2 = neurons[j];
+          const dx = n1.x - n2.x;
+          const dy = n1.y - n2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 150 * dpr) {
+            context.beginPath();
+            context.strokeStyle = n1.color;
+            context.globalAlpha = (1 - dist / (150 * dpr)) * 0.2;
+            context.lineWidth = 0.8 * dpr;
+            context.moveTo(n1.x, n1.y);
+            context.lineTo(n2.x, n2.y);
+            context.stroke();
+          }
         }
+
+        context.beginPath();
+        context.arc(n1.x, n1.y, n1.r * dpr, 0, Math.PI * 2);
+        context.fillStyle = n1.color;
+        context.globalAlpha = 0.9;
+        context.shadowBlur = 12;
+        context.shadowColor = n1.color;
+        context.fill();
+        context.shadowBlur = 0;
+
+        n1.x += n1.vx;
+        n1.y += n1.vy;
+        if (n1.x < 0 || n1.x > width) n1.vx *= -1;
+        if (n1.y < 0 || n1.y > height) n1.vy *= -1;
       }
 
-      context.beginPath();
-      context.arc(n1.x, n1.y, n1.r * dpr, 0, Math.PI * 2);
-      context.fillStyle = n1.color;
-      context.globalAlpha = 0.9;
-      context.shadowBlur = 12;
-      context.shadowColor = n1.color;
-      context.fill();
-      context.shadowBlur = 0;
-
-      n1.x += n1.vx;
-      n1.y += n1.vy;
-      if (n1.x < 0 || n1.x > width) n1.vx *= -1;
-      if (n1.y < 0 || n1.y > height) n1.vy *= -1;
+      rafRef.current = requestAnimationFrame(animate);
     }
 
-    rafId = requestAnimationFrame(animate);
-  }
+    rafRef.current = requestAnimationFrame(animate);
 
-  animate();
-
-  return () => {
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-    }
-    window.removeEventListener("resize", resize);
-  };
-}, [darkMode]);
-
-
+    return () => {
+      // IMMEDIATE CLEANUP
+      mountedRef.current = false;
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      window.removeEventListener("resize", resize);
+    };
+  }, [darkMode]);
 
   return <canvas ref={canvasRef} className="neuron-bg-canvas" />;
 }
 
-
-// --- Green circular cursor controller ---
+// --- FIXED Green Cursor (Safe) ---
 function GreenCursorController() {
   useEffect(() => {
-    const el = document.getElementById("green-cursor");
-    if (!el) return;
-
     const move = (e: MouseEvent) => {
+      const el = document.getElementById("green-cursor");
+      if (!el) return;
       el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     };
 
@@ -117,7 +125,6 @@ function GreenCursorController() {
 
   return null;
 }
-
 
 export default function GreenPromptPage() {
   return (
@@ -147,7 +154,7 @@ export default function GreenPromptPage() {
             </div>
 
             <p className="greenprompt-tagline">
-              “Grammarly for Prompts” — a cross‑platform AI prompt optimization
+              "Grammarly for Prompts" — a cross‑platform AI prompt optimization
               platform that reduces token usage, computational waste, and carbon footprint in real time.
             </p>
 
@@ -158,7 +165,7 @@ export default function GreenPromptPage() {
                 loop
                 muted
                 playsInline
-                poster="/greenprompt-thumb.png"
+                poster="/spotify.png" // FIXED: Use your existing image
               >
                 <source src="https://res.cloudinary.com/dztthidxb/video/upload/v1766933831/greenprompt-video_imuqco.mp4" type="video/mp4" />
               </video>
@@ -185,7 +192,7 @@ export default function GreenPromptPage() {
                   <li>Python + ML models</li>
                   <li>React.js / Next.js</li>
                   <li>MySQL database</li>
-                  <li>CO₂ impact &amp; metrics</li>
+                  <li>CO₂ impact & metrics</li>
                 </ul>
               </div>
 
@@ -193,7 +200,7 @@ export default function GreenPromptPage() {
                 <h3 className="subheading">HIGHLIGHTS</h3>
                 <ul className="custom-list">
                   <li>Real‑time prompt optimization</li>
-                  <li>Lower token usage &amp; cost</li>
+                  <li>Lower token usage & cost</li>
                   <li>Energy and CO₂ savings dashboard</li>
                   <li>Multi‑LLM API support (GPT, Claude, Gemini, Perplexity)</li>
                 </ul>
