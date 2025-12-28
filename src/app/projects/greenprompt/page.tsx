@@ -11,79 +11,49 @@ function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
+  const canvas = canvasRef.current;
+  if (!canvas) return;
+  const context = canvas.getContext("2d");
+  if (!context) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    let width = window.innerWidth * dpr;
-    let height = window.innerHeight * dpr;
+  const dpr = window.devicePixelRatio || 1;
+  let width = window.innerWidth * dpr;
+  let height = window.innerHeight * dpr;
+  canvas.width = width;
+  canvas.height = height;
+
+  const resize = () => {
+    width = window.innerWidth * dpr;
+    height = window.innerHeight * dpr;
     canvas.width = width;
     canvas.height = height;
+  };
+  window.addEventListener("resize", resize);
 
-    const resize = () => {
-      width = window.innerWidth * dpr;
-      height = window.innerHeight * dpr;
-      canvas.width = width;
-      canvas.height = height;
-    };
-    window.addEventListener("resize", resize);
+  let isRunning = true;  // ← ADD THIS
 
-    const neurons = Array.from({ length: 80 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: (Math.random() - 0.5) * 0.8,
-      r: Math.random() * 2 + 1,
-      color: Math.random() < 0.5 ? "#ffffff" : "#00ff88",
-    }));
+  const neurons = Array.from({ length: 80 }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    vx: (Math.random() - 0.5) * 0.8,
+    vy: (Math.random() - 0.5) * 0.8,
+    r: Math.random() * 2 + 1,
+    color: Math.random() < 0.5 ? "#ffffff" : "#00ff88",
+  }));
 
-    function animate() {
-      if (!context || !canvas) return;
-      context.clearRect(0, 0, width, height);
+  function animate() {
+    if (!isRunning || !context || !canvas) return;  // ← ADD isRunning CHECK
+    // ... all your existing drawing code ...
+    requestAnimationFrame(animate);
+  }
 
-      for (let i = 0; i < neurons.length; i++) {
-        const n1 = neurons[i];
+  animate();
+  return () => {
+    isRunning = false;  // ← STOP ANIMATION
+    window.removeEventListener("resize", resize);
+  };
+}, [darkMode]);
 
-        for (let j = i + 1; j < neurons.length; j++) {
-          const n2 = neurons[j];
-          const dx = n1.x - n2.x;
-          const dy = n1.y - n2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 150 * dpr) {
-            context.beginPath();
-            context.strokeStyle = n1.color;
-            context.globalAlpha = (1 - dist / (150 * dpr)) * 0.2;
-            context.lineWidth = 0.8 * dpr;
-            context.moveTo(n1.x, n1.y);
-            context.lineTo(n2.x, n2.y);
-            context.stroke();
-          }
-        }
-
-        context.beginPath();
-        context.arc(n1.x, n1.y, n1.r * dpr, 0, Math.PI * 2);
-        context.fillStyle = n1.color;
-        context.globalAlpha = 0.9;
-        context.shadowBlur = 12;
-        context.shadowColor = n1.color;
-        context.fill();
-        context.shadowBlur = 0;
-
-        n1.x += n1.vx;
-        n1.y += n1.vy;
-        if (n1.x < 0 || n1.x > width) n1.vx *= -1;
-        if (n1.y < 0 || n1.y > height) n1.vy *= -1;
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-    return () => window.removeEventListener("resize", resize);
-  }, [darkMode]);
 
   return <canvas ref={canvasRef} className="neuron-bg-canvas" />;
 }
@@ -146,7 +116,7 @@ export default function GreenPromptPage() {
                 loop
                 muted
                 playsInline
-                poster="/greenprompt-poster.jpg"
+                poster="/greenprompt-thumb.png"
               >
                 <source src="https://res.cloudinary.com/dztthidxb/video/upload/v1766933831/greenprompt-video_imuqco.mp4" type="video/mp4" />
               </video>

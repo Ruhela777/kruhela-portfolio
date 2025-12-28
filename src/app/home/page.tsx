@@ -1454,7 +1454,7 @@ const projects = [
   {
     id: "spotifyclone",
     name: "SpotifyClone",
-    thumbnail: "/projects/spotifyclone-thumb.jpg",
+    thumbnail: "/projects/spotify.png",
   },
 ];
 
