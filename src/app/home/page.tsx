@@ -44,6 +44,7 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
   useEffect(() => {
     if (!sectionRef.current) return;
 
+    let split: any;
     const ctx = gsap.context(() => {
       const statementBig = sectionRef.current!.querySelector(
         ".statement-big"
@@ -51,7 +52,7 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
 
       if (!statementBig) return;
 
-      const split = new SplitType(statementBig, {
+      split = new SplitType(statementBig, {
         types: "chars",
       });
 
@@ -61,7 +62,7 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
           start: "top top",
           end: "bottom top",
           scrub: 1.5,
-          pin: true,
+          pin: false,
         },
       });
 
@@ -78,7 +79,10 @@ const StatementSection = ({ darkMode = false }: { darkMode?: boolean }) => {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      if (split) split.revert();
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -1220,7 +1224,7 @@ function ServicesSection() {
           start: "top top",
           end: "bottom+=400 top",
           scrub: 1.2,
-          pin: true,
+          pin: false,
         },
       });
 

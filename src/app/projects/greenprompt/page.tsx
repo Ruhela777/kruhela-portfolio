@@ -1,139 +1,134 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import "./greenprompt.css";
 
-// --- FIXED Neuron Background (Bulletproof Cleanup) ---
+// --- BULLETPROOF CLIENT-ONLY Canvas (No Hydration Issues) ---
 function NeuronBackground({ darkMode }: { darkMode: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const mountedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    // Clear any existing RAF immediately
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
+    // Skip if not mounted on client
+    if (typeof window === 'undefined') return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const context = canvas.getContext("2d");
-    if (!context) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    mountedRef.current = true;
-
+    let rafId: number;
+    let width = 0;
+    let height = 0;
     const dpr = window.devicePixelRatio || 1;
-    let width = window.innerWidth * dpr;
-    let height = window.innerHeight * dpr;
-    canvas.width = width;
-    canvas.height = height;
+    const neurons: any[] = [];
+    const neuronCount = 60;
 
-    const resizeHandler = () => {
-      if (!mountedRef.current) return;
+    const resize = () => {
       width = window.innerWidth * dpr;
       height = window.innerHeight * dpr;
       canvas.width = width;
       canvas.height = height;
     };
 
-    const resize = resizeHandler;
-    window.addEventListener("resize", resize);
+    const init = () => {
+      resize();
+      neurons.length = 0;
+      
+      for (let i = 0; i < neuronCount; i++) {
+        neurons.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: (Math.random() - 0.5) * 1.2,
+          r: Math.random() * 2 + 1.2,
+        });
+      }
+    };
 
-    const neurons = Array.from({ length: 80 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: (Math.random() - 0.5) * 0.8,
-      r: Math.random() * 2 + 1,
-      color: Math.random() < 0.5 ? "#ffffff" : "#00ff88",
-    }));
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height);
+      const color = darkMode ? "#ffffff" : "#000000";
+      const maxDist = 120 * dpr;
 
-    function animate() {
-      if (!mountedRef.current || !context || !canvas) return;
-
-      context.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < neurons.length; i++) {
-        const n1 = neurons[i];
-
-        for (let j = i + 1; j < neurons.length; j++) {
-          const n2 = neurons[j];
-          const dx = n1.x - n2.x;
-          const dy = n1.y - n2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 150 * dpr) {
-            context.beginPath();
-            context.strokeStyle = n1.color;
-            context.globalAlpha = (1 - dist / (150 * dpr)) * 0.2;
-            context.lineWidth = 0.8 * dpr;
-            context.moveTo(n1.x, n1.y);
-            context.lineTo(n2.x, n2.y);
-            context.stroke();
+      // Connections
+      for (let i = 0; i < neuronCount; i++) {
+        for (let j = i + 1; j < neuronCount; j++) {
+          const dx = neurons[i].x - neurons[j].x;
+          const dy = neurons[i].y - neurons[j].y;
+          const dist = Math.hypot(dx, dy);
+          
+          if (dist < maxDist) {
+            ctx.save();
+            ctx.globalAlpha = 0.8 - dist / maxDist;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 0.6 * dpr;
+            ctx.beginPath();
+            ctx.moveTo(neurons[i].x, neurons[i].y);
+            ctx.lineTo(neurons[j].x, neurons[j].y);
+            ctx.stroke();
+            ctx.restore();
           }
         }
-
-        context.beginPath();
-        context.arc(n1.x, n1.y, n1.r * dpr, 0, Math.PI * 2);
-        context.fillStyle = n1.color;
-        context.globalAlpha = 0.9;
-        context.shadowBlur = 12;
-        context.shadowColor = n1.color;
-        context.fill();
-        context.shadowBlur = 0;
-
-        n1.x += n1.vx;
-        n1.y += n1.vy;
-        if (n1.x < 0 || n1.x > width) n1.vx *= -1;
-        if (n1.y < 0 || n1.y > height) n1.vy *= -1;
       }
 
-      rafRef.current = requestAnimationFrame(animate);
-    }
+      // Nodes & Movement
+      for (const neuron of neurons) {
+        ctx.beginPath();
+        ctx.arc(neuron.x, neuron.y, neuron.r * dpr, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10 * dpr;
+        ctx.fill();
 
-    rafRef.current = requestAnimationFrame(animate);
+        neuron.x += neuron.vx;
+        neuron.y += neuron.vy;
+
+        if (neuron.x < 0 || neuron.x > width) neuron.vx *= -1;
+        if (neuron.y < 0 || neuron.y > height) neuron.vy *= -1;
+      }
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    init();
+    animate();
+
+    window.addEventListener("resize", resize);
 
     return () => {
-      // IMMEDIATE CLEANUP
-      mountedRef.current = false;
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("resize", resize);
     };
   }, [darkMode]);
 
-  return <canvas ref={canvasRef} className="neuron-bg-canvas" />;
-}
-
-// --- FIXED Green Cursor (Safe) ---
-function GreenCursorController() {
-  useEffect(() => {
-    const move = (e: MouseEvent) => {
-      const el = document.getElementById("green-cursor");
-      if (!el) return;
-      el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-    };
-
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
-  }, []);
-
-  return null;
+  return <canvas ref={canvasRef} className="neuron-bg-canvas" aria-hidden="true" />;
 }
 
 export default function GreenPromptPage() {
+  const [darkMode] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <main className="greenprompt-page">
+        <div className="content-container">
+          <div className="skeleton-loading" />
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="greenprompt-page">
-      <NeuronBackground darkMode={true} />
-
-      {/* Custom bright green border cursor */}
-      <div id="green-cursor" className="green-cursor" />
-      <GreenCursorController />
+      <NeuronBackground darkMode={darkMode} />
 
       <div className="content-container">
         <div className="greenprompt-inner">
@@ -147,15 +142,15 @@ export default function GreenPromptPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="github-icon-link"
-                aria-label="Open GreenPrompt GitHub repository"
+                aria-label="GreenPrompt GitHub"
               >
-                <FaGithub />
+                <FaGithub size={32} />
               </a>
             </div>
 
             <p className="greenprompt-tagline">
-              "Grammarly for Prompts" — a cross‑platform AI prompt optimization
-              platform that reduces token usage, computational waste, and carbon footprint in real time.
+              "Grammarly for Prompts" — AI prompt optimization platform that 
+              reduces token usage, computational waste, and carbon footprint.
             </p>
 
             <div className="hero-video-container">
@@ -165,9 +160,12 @@ export default function GreenPromptPage() {
                 loop
                 muted
                 playsInline
-                poster="/spotify.png" // FIXED: Use your existing image
+                poster="/projects/greenprompt-thumb.png"
               >
-                <source src="https://res.cloudinary.com/dztthidxb/video/upload/v1766933831/greenprompt-video_imuqco.mp4" type="video/mp4" />
+                <source 
+                  src="https://res.cloudinary.com/dztthidxb/video/upload/v1766933831/greenprompt-video_imuqco.mp4" 
+                  type="video/mp4" 
+                />
               </video>
             </div>
           </section>
@@ -175,14 +173,10 @@ export default function GreenPromptPage() {
           <section className="greenprompt-right">
             <div className="info-block">
               <h2 className="section-heading">DESCRIPTION</h2>
-              <p className="body-text">
-                GreenPrompt uses machine learning to analyze and restructure prompts so LLM
-                calls become more efficient, cheaper, and greener.
-              </p>
-              <p className="body-text">
-                A built‑in sustainability dashboard tracks cost, energy, and CO₂ savings
-                while serving optimized prompts to APIs like GPT, Claude, Gemini, and Perplexity.
-              </p>
+              <div className="body-text">
+                <p>GreenPrompt uses ML to analyze and optimize prompts for LLMs, making calls more efficient, cheaper, and greener.</p>
+                <p>Sustainability dashboard tracks cost, energy, and CO₂ savings across GPT, Claude, Gemini, and Perplexity APIs.</p>
+              </div>
             </div>
 
             <div className="greenprompt-columns">
@@ -192,17 +186,17 @@ export default function GreenPromptPage() {
                   <li>Python + ML models</li>
                   <li>React.js / Next.js</li>
                   <li>MySQL database</li>
-                  <li>CO₂ impact & metrics</li>
+                  <li>CO₂ impact metrics</li>
                 </ul>
               </div>
 
               <div className="info-block">
                 <h3 className="subheading">HIGHLIGHTS</h3>
                 <ul className="custom-list">
-                  <li>Real‑time prompt optimization</li>
-                  <li>Lower token usage & cost</li>
-                  <li>Energy and CO₂ savings dashboard</li>
-                  <li>Multi‑LLM API support (GPT, Claude, Gemini, Perplexity)</li>
+                  <li>Real-time prompt optimization</li>
+                  <li>Token usage & cost reduction</li>
+                  <li>Energy/CO₂ savings dashboard</li>
+                  <li>Multi-LLM API support</li>
                 </ul>
               </div>
             </div>

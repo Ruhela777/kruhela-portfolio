@@ -12,14 +12,27 @@
   --text-gray: #a1a1a1;
   --gp-green: #00ff88;
 }
+.skeleton-loading {
+  min-height: 100vh;
+  background: #050b0f;
+}
+.neuron-bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
 
 .greenprompt-page {
-  background-color: var(--bg-color);
-  color: var(--accent-white);
   min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
-  cursor: none; /* hide default cursor for custom one */
+  background: #050b0f;
+  color: #f9fafb;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Custom bright green circular border cursor */
@@ -39,18 +52,12 @@
   background: transparent;
 }
 
-/* Canvas background */
-.neuron-bg-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  pointer-events: none;
-}
+
 
 .content-container {
   position: relative;
-  z-index: 2;
+  z-index: 10;
+  min-height: 100vh;
 }
 
 .greenprompt-inner {

@@ -120,7 +120,7 @@ export default function LoaderPage() {
   // After typing, go to home
   useEffect(() => {
     if (screen === "typing" && typedText === fullName) {
-      const timeout = setTimeout(() => {
+      const timeout = setTimeout(async () => {
         const audio = audioRef.current;
         if (audio) {
           audio.pause();
@@ -129,7 +129,7 @@ export default function LoaderPage() {
         cleanupAnimations();
         // Wrap push in try/catch to surface any navigation errors
         try {
-          router.push("/home");
+          await router.push("/home");
         } catch (e) {
           console.error("router.push('/home') failed:", e);
         }
