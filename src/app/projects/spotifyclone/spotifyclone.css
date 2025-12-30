@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&family=Orbitron:wght@700&family=Playfair+Display:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tomorrow:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Electrolize&display=swap');
+
+:root {
+  --bg-color: #02040a;
+  --accent-white: #ffffff;
+  --text-gray: #a1a1a1;
+  --gp-green: #00ff88;
+}
+
+.skeleton-loading {
+  min-height: 100vh;
+  background: #02040a;
+}
+
+.neuron-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Floating Music Icons */
+.floating-music-icons {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.music-icon {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Arial', sans-serif;
+  animation: float 20s linear infinite;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes float {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* PAGE LAYOUT */
+.spotifyclone-page {
+  min-height: 100vh;
+  color: #f9fafb;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+}
+
+/* Custom blue music symbol cursor */
+.music-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 40px;
+  color: #00aaff;
+  pointer-events: none;
+  z-index: 50;
+  transform: translate(-50%, -50%);
+  transition: transform 0.06s ease-out;
+  text-shadow: 0 0 10px rgba(0, 170, 255, 0.8);
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+}
+
+.content-container {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+}
+
+.spotifyclone-inner {
+  display: flex;
+  padding: 60px 8%;
+  gap: 60px;
+  min-height: 85vh;
+}
+
+.spotifyclone-left {
+  flex: 1.5;
+}
+
+.spotifyclone-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.spotifyclone-year {
+  font-weight: 600;
+  color: var(--text-gray);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+/* Title row with GitHub icon */
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.spotifyclone-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: 0.9;
+}
+
+.github-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+  font-size: 1.4rem;
+}
+
+.github-icon-link:hover {
+  background: #ffffff;
+  color: #000000;
+  transform: translateY(-1px) scale(1.03);
+}
+
+.live-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 170, 255, 0.5);
+  color: #00aaff;
+  background: rgba(0, 170, 255, 0.1);
+  transition: all 0.25s ease;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: "Electrolize", sans-serif;
+}
+
+.live-link-icon:hover {
+  background: #00aaff;
+  color: #ffffff;
+  transform: translateY(-1px) scale(1.02);
+  border-color: #00aaff;
+  text-decoration: none;
+}
+
+/* Tagline */
+.spotifyclone-tagline {
+  font-size: 1.05rem;
+  max-width: 520px;
+  color: var(--text-gray);
+  margin-bottom: 24px;
+  line-height: 1.6;
+  text-align: justify;
+  font-family: "Electrolize", sans-serif;
+}
+
+/* Video Container Styling */
+.hero-video-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 60px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+}
+
+.project-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 255, 136, 0.9);
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3);
+  z-index: 10;
+}
+
+.video-play-button:hover {
+  background: rgba(0, 255, 136, 1);
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 12px 48px rgba(0, 255, 136, 0.5);
+}
+
+/* Right Side Content */
+.section-heading {
+  font-family: "Tomorrow", sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.subheading {
+  font-family: "Tomorrow", sans-serif;
+  font-size: 1.2rem;
+}
+
+.body-text {
+  line-height: 1.6;
+  color: var(--text-gray);
+  font-size: 1rem;
+  text-align: justify;
+  font-family: "Electrolize", sans-serif;
+}
+
+.custom-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+  font-family: "Electrolize", sans-serif;
+}
+
+.custom-list li {
+  color: var(--text-gray);
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.spotifyclone-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .spotifyclone-inner {
+    flex-direction: column;
+    padding: 40px 6%;
+    gap: 40px;
+  }
+
+  .title-row {
+    align-items: flex-end;
+  }
+
+  .spotifyclone-title {
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+  }
+
+  .spotifyclone-tagline {
+    font-size: 1rem;
+  }
+
+  .section-heading {
+    font-size: 1.4rem;
+  }
+
+  .github-icon-link {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+}
