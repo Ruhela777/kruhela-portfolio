@@ -1453,7 +1453,7 @@ const projects = [
   {
     id: "kaska",
     name: "KASKA",
-    thumbnail: "/projects/kaska-thumb.png",
+    thumbnail: "/projects/kaska.png",
   },
   {
     id: "spotifyclone",
