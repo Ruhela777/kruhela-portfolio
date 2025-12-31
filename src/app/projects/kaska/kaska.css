@@ -129,16 +129,48 @@
   font-family: "Electrolize", sans-serif;
 }
 
-/* Video Container Styling */
+/* Video Container Styling - Mobile Phone Frame */
 .hero-video-container {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
+  max-width: 320px;
+  aspect-ratio: 9 / 19.5;
+  background: #000;
+  border: 12px solid #1a1a1a;
+  border-radius: 36px;
   position: relative;
-  margin-top: 60px;
+  margin-top: 20px;
+  box-shadow:
+    0 0 0 2px #333,
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px #000;
+  overflow: hidden;
+  margin-left: 100px;
+}
+
+.hero-video-container::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 24px;
+  background: #1a1a1a;
+  border-radius: 0 0 16px 16px;
+  z-index: 2;
+}
+
+.hero-video-container::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  z-index: 2;
 }
 
 .project-video {
@@ -218,4 +250,25 @@
     height: 36px;
     font-size: 1.2rem;
   }
+}
+
+.back-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  text-decoration: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.back-button:hover {
+  background: rgba(0, 255, 136, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.1);
 }

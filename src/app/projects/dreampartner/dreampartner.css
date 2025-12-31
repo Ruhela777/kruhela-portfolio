@@ -195,3 +195,27 @@
   .dp-section-heading { font-size: 1.4rem; }
   .dp-github-icon-link { width: 36px; height: 36px; font-size: 1.2rem; }
 }
+
+.dp-back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  color: #ff69b4;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 2px solid #ff69b4;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dp-back-button:hover {
+  background: #ff69b4;
+  color: #000;
+  transform: translateY(-2px);
+}

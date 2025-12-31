@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import "./spotifyclone.css";
@@ -318,6 +319,9 @@ export default function SpotifyClonePage() {
       <MusicCursorController />
 
       <div className="content-container">
+        <Link href="/home" className="back-button">
+          ←
+        </Link>
         <div className="spotifyclone-inner">
           <section className="spotifyclone-left">
             <p className="spotifyclone-year">2024</p>

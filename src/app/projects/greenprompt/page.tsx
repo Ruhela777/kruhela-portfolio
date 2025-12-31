@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import "./greenprompt.css";
@@ -151,6 +152,9 @@ export default function GreenPromptPage() {
       <GreenCursorController />
 
       <div className="content-container">
+        <Link href="/home" className="back-button">
+          &lt;
+        </Link>
         <div className="greenprompt-inner">
           <section className="greenprompt-left">
             <p className="greenprompt-year">2025</p>

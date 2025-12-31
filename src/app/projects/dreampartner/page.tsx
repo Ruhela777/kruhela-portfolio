@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { FaGithub } from "react-icons/fa";
 import "./dreampartner.css";
@@ -164,6 +165,9 @@ export default function DreamPartnerPage() {
       <HeartCursorController />
 
       <div className="dp-content-container">
+        <Link href="/home" className="dp-back-button">
+          ←
+        </Link>
         <div className="dp-inner">
           <section className="dp-left">
             <p className="dp-year">2025</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import "./kaska.css";
@@ -152,6 +153,9 @@ export default function KaskaPage() {
       <GreenCursorController />
 
       <div className="content-container">
+        <Link href="/home" className="back-button">
+          ←
+        </Link>
         <div className="kaska-inner">
           <section className="kaska-left">
             <div className="hero-video-container">
