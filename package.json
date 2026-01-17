@@ -10,6 +10,7 @@
     "deploy": "gh-pages -d out"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "^5.15.5",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
     "gsap": "^3.14.1",
