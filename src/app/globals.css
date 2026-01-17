@@ -1,4 +1,13 @@
+/* Google font must come FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&display=swap');
+
+/* Tailwind v4 import */
 @import "tailwindcss";
+
+/* =============================
+   BASE
+============================= */
+
 html {
   scroll-behavior: smooth;
 }
@@ -6,13 +15,6 @@ html {
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,20 +27,19 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Geist', sans-serif;
   overflow-x: hidden;
-  /* Remove any strict y-overflow: allow vertical scrolling if needed */
-  /* overflow-y: hidden;   <== REMOVE THIS */
   margin: 0;
   padding: 0;
 }
 
-
-html, body {
-  height: auto !important;        /* Let content expand naturally */
-  min-height: 100vh;              /* Still fill screen height */
-  overflow-x: hidden !important;  /* No side scroll */
-  overflow-y: auto !important;    /* Allow vertical scroll */
+/* Allow proper scrolling */
+html,
+body {
+  height: auto !important;
+  min-height: 100vh;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   margin: 0;
   padding: 0;
 }
@@ -46,11 +47,12 @@ html, body {
 /* =============================
    PAGE CONTENT
 ============================= */
+
 .page-content {
-  padding-top: 132px;             /* Matches navbar height */
-  height: auto !important;        /* Allow auto height */
+  padding-top: 132px;
+  height: auto !important;
   min-height: calc(100vh - 132px);
-  overflow: visible !important;   /* Let children show fully */
+  overflow: visible !important;
   margin: 0;
   padding-bottom: 0;
   display: block;
