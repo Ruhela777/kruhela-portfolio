@@ -133,20 +133,19 @@
 .hero-video-container {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000;
   border-radius: 12px;
   overflow: hidden;
-  position: relative;
   margin-top: 60px;
 }
 
 .project-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
+
 
 /* Right Side Content - Smaller text */
 .section-heading {
